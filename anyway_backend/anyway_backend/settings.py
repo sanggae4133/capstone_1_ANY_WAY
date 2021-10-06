@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import my_settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -83,17 +84,22 @@ WSGI_APPLICATION = 'anyway_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql', # 엔진 설정
-        'NAME': 'anyway', # DB 스키마 이름
-        'USER': 'root', # DB 접속 계정명
-        'PASSWORD': 'Bs970923', # DB 접속 계정 비번
-        'HOST': 'localhost', # 실제 DB 주소
-        'PORT': '3306', # 포트번호
-    }
-}
-SECRET_KEY = 'django-insecure-^r^@r22nj8fj8g8l0d$x#i=36kei3u=kn)ei+94(z=_))zwsnd'
+# 데이터베이스 관련 설정 내역 manage.py 가 있는 디렉토리에 my_settings 만들어서 import 함
+
+DATABASES = my_settings.DATABASES
+SECRET_KEY = my_settings.SECRET_KEY
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',  # 엔진 설정
+#         'NAME': 'anyway',  # DB 스키마 이름
+#         'USER': 'root',  # DB 접속 계정명
+#         'PASSWORD': 'Bs970923',  # DB 접속 계정 비번
+#         'HOST': 'localhost',  # 실제 DB 주소
+#         'PORT': '3306',  # 포트번호
+#     }
+# }
+# SECRET_KEY = ''
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
