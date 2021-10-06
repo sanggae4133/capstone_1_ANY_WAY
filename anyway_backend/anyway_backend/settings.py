@@ -93,7 +93,7 @@ DATABASES = {
         'PORT': '3306', # 포트번호
     }
 }
-SECRET_KEY = ''
+SECRET_KEY = 'django-insecure-^r^@r22nj8fj8g8l0d$x#i=36kei3u=kn)ei+94(z=_))zwsnd'
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 

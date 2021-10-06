@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="로그인"
-        app:layout_constraintBaseline_toBaselineOf="@+id/join_button"
+        app:layout_constraintBaseline_toBaselineOf="@+id/register_button"
         app:layout_constraintStart_toStartOf="@+id/login_password" />
 
     <EditText
@@ -50,7 +50,7 @@
 
 
     <Button
-        android:id="@+id/join_button"
+        android:id="@+id/register_button"
         style="@style/defaultButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

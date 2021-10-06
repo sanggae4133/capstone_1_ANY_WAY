@@ -20,7 +20,7 @@ import org.json.JSONObject;
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText join_email, join_password, join_name, join_pwck;
-    private Button join_button, check_button;
+    private Button join_button, check_button, delete;
     private AlertDialog dialog;
     private boolean validate = false;
 
@@ -87,9 +87,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
 
-
         //회원가입 버튼 클릭 시 수행
-        join_button = findViewById( R.id.join_button );
+        join_button = findViewById( R.id.register_button);
         join_button.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,5 +155,16 @@ public class RegisterActivity extends AppCompatActivity {
                 queue.add( registerRequest );
             }
         });
+
+        //취소 버튼 클릭 시 수행
+//        delete = findViewById( R.id.delete );
+//        delete.setOnClickListener( new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
+
     }
 }

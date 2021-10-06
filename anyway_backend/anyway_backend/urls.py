@@ -25,7 +25,8 @@ urlpatterns = [
     path('accounts/<int:pk>/', views.account),
     path('login/', views.login),
     path('app_login/', views.app_login),
-    url(r'^api-v1/',include(router.urls)),
+    path('app_register/', views.app_register),
+    #url(r'^api-v1/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 
 ]

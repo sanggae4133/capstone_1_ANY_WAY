@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
         login_email = findViewById( R.id.login_email );
         login_password = findViewById( R.id.login_password );
 
-        join_button = findViewById( R.id.join_button );
+        join_button = findViewById( R.id.register_button);
         join_button.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View view) {

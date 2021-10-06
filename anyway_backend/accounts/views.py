@@ -7,8 +7,6 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Account
 from .serializer import AccountSerializer
 from rest_framework.parsers import JSONParser
-
-
 # Create your views here.
 
 
@@ -71,23 +69,23 @@ def login(request):
 def app_login(request):
     if request.method == 'POST':
         print("리퀘스트 로그" + str(request.body))
-        # userid = request.POST.get('userid', '')
-        # userpw = request.POST.get('userpw', '')
-        # print("id = " + userid + " pw = " + userpw)
-        # result = authenticate(userid=search_userid, userpw=search_userpw)
+        search_userid = request.POST.get('userid', '')
+        search_userpw = request.POST.get('userpw', '')
+        print("id = " + search_userid + " pw = " + search_userpw)
+        #result = authenticate(userid=search_userid, userpw=search_userpw)
 
-        data = JSONParser().parse(request)
-        search_userid = data['userid']
-        search_userpw = data['userpw']
-        print("id = ", search_userid, "pw = ", search_userpw)
-
+        # data = JSONParser().parse(request)
+        # search_userid = data['userid']
+        # search_userpw = data['userpw']
+        # print("id = ", search_userid, "pw = ", search_userpw)
+        #
         try:
             obj = Account.objects.get(userid=search_userid)
         except ObjectDoesNotExist:
             print("ID 없어서 실패")
             return JsonResponse({'code': '1001', 'msg': 'ID 없어서 로그인실패입니다.'}, status=200)
 
-        result = data['userpw'] == obj.userpw
+        result = search_userpw == obj.userpw
 
         if result:
             print("로그인 성공!")
@@ -95,3 +93,22 @@ def app_login(request):
         else:
             print("비번 틀려서 실패")
             return JsonResponse({'code': '1001', 'msg': 'PW 틀려서 로그인실패입니다.'}, status=200)
+
+@csrf_exempt
+def app_register(request):
+    if request.method == 'POST':
+        print("리퀘스트 로그" + str(request.body))
+        search_userid = request.POST.get('userid', '')
+        search_userpw = request.POST.get('userpw', '')
+        search_name = request.POST.get('name', '')
+        data = {
+            "name": search_name,
+            "userid": search_userid,
+            "userpw": search_userpw
+        }
+        serializer = AccountSerializer(data=data)  # 파싱한 데이터를 serializer 에 넣음
+        # => serializer 가 올바르면 객체 만듬
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse({'code': '0000', 'msg': '회원가입 성공입니다.'}, status=201)
+        return JsonResponse({'code': '1001', 'msg': '회원가입 실패입니다.'}, status=400)
