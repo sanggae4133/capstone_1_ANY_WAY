@@ -25,7 +25,7 @@ class LoginActivity2 : AppCompatActivity() {
         //baseURl http://~~~:8000/
         // ~~~ 부분에 ipconfig ipv4 주소 넣어야 함
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://172.30.1.2:8000/")
+            .baseUrl("http://172.30.1.21:8000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

@@ -106,9 +106,24 @@ def app_register(request):
             "userid": search_userid,
             "userpw": search_userpw
         }
+
         serializer = AccountSerializer(data=data)  # 파싱한 데이터를 serializer 에 넣음
         # => serializer 가 올바르면 객체 만듬
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse({'code': '0000', 'msg': '회원가입 성공입니다.'}, status=201)
+            return JsonResponse({'code': '0000', 'msg': '회원가입 성공입니다.'}, status=200)
         return JsonResponse({'code': '1001', 'msg': '회원가입 실패입니다.'}, status=400)
+
+
+@csrf_exempt
+def app_check_id(request):
+    if request.method == 'POST':
+        print("리퀘스트 로그" + str(request.body))
+        input_id = request.POST.get('userid', '')
+        query_set = Account.objects.all()  # 모든 객체 다 읽어옴
+        for user in query_set:
+            print("입력:", input_id, " 기존: ", user.userid)
+            if input_id == user.userid:
+                return JsonResponse({'code': '1001', 'msg': 'ID 중복'}, status=200)
+        return JsonResponse({'code': '0007', 'msg': 'ID 중복체크 통과'}, status=200)
+
