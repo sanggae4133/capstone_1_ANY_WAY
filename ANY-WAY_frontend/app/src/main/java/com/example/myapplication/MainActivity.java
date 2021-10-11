@@ -55,6 +55,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -65,11 +66,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //FusedLocationProviderClient란 통합 위치 제공자와 상호 작용하기 위한 기본 진입점.
     //요약하면 센서들을 활용해서 위치를 반환하는 클래스다
     private FusedLocationSource locationSource;
-    public NaverMap naverMap;
+    private NaverMap naverMap;
     private Geocoder geocoder;
-    EditText editText;
+    TextView totalDistanceText;
+    TextView totalTimeText;
+    EditText editTextStart;
+    EditText editTextEnd;
     Button Button;
-    Button Button2;
 
 
     @Override
@@ -77,7 +80,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        editText = findViewById(R.id.editText);
+        totalDistanceText=findViewById(R.id.totalDistance);
+        totalTimeText=findViewById(R.id.totalTime);
+        editTextStart = findViewById(R.id.editTextStart);
+        editTextEnd=findViewById(R.id.editTextEnd);
         Button = findViewById(R.id.button);
 
         //지도 사용권한을 받아 온다.
@@ -123,11 +129,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         this.naverMap = naverMap;
-        geocoder = new Geocoder(this);
+        geocoder = new Geocoder(this, Locale.KOREAN);
         //네이버 맵에 locationSource를 셋하면 위치 추적 기능을 사용 할 수 있다
         naverMap.setLocationSource(locationSource);
         //위치 추적 모드 지정 가능 내 위치로 이동
-//        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 //        //현재위치 버튼 사용가능
         naverMap.getUiSettings().setLocationButtonEnabled(true);
         LatLng initialPosition = new LatLng(37.506855, 127.066242);
@@ -144,48 +150,46 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        // 버튼 이벤트
         //검색을 하면 검색한 좌표에 마커를 찍어준다.
         // 버튼 이벤트
         Button.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
-                String str=editText.getText().toString();
-                List<Address> addressList = null;
+                String strStart=editTextStart.getText().toString();
+                String strEnd=editTextEnd.getText().toString();
+                List<Address> addressListStart = null,addressListEnd = null;
                 try {
                     // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
-                    addressList = geocoder.getFromLocationName(
-                            str, // 주소
-                            10); // 최대 검색 결과 개수
+                    addressListStart = geocoder.getFromLocationName(
+                            strStart, // 주소
+                            5); // 최대 검색 결과 개수
+                    addressListEnd = geocoder.getFromLocationName(
+                            strEnd, // 주소
+                            5); // 최대 검색 결과 개수
                 }
                 catch (IOException e) {
                     e.printStackTrace();
                 }
-
-
-                    System.out.println(addressList.get(0).toString());
-                    // 콤마를 기준으로 split
-                    String[] splitStr = addressList.get(0).toString().split(",");
-                    String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1, splitStr[0].length() - 2); // 주소
-                    System.out.println(address);
-
-                    String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
-                    String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
-                    System.out.println(latitude);
-                    System.out.println(longitude);
+                    //지오코딩으로 받은 주소를 위도,경도로 파싱하는 클래스
+                    AddressPasing addressPasingStart=new AddressPasing(addressListStart);
+                    AddressPasing addressPasingEnd=new AddressPasing(addressListEnd);
 
                     // 좌표(위도, 경도) 생성
-                    LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                    LatLng Startpoint = new LatLng(Double.parseDouble(addressPasingStart.getlatitude()), Double.parseDouble(addressPasingStart.getlongitude()));
+                    LatLng Endpoint = new LatLng(Double.parseDouble(addressPasingEnd.getlatitude()), Double.parseDouble(addressPasingEnd.getlongitude()));
                     // 마커 생성
-                    Marker marker = new Marker();
-                    marker.setPosition(point);
+                    Marker markerStart = new Marker();
+                    Marker markerEnd=new Marker();
+                    markerStart.setPosition(Startpoint);
+                    markerEnd.setPosition(Endpoint);
                     // 마커 추가
-                    marker.setMap(naverMap);
+                    markerStart.setMap(naverMap);
+                    markerEnd.setMap(naverMap);
 
                     // 해당 좌표로 화면 줌
-//                naverMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
+//                    naverMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
 
-                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(point);
+                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(Startpoint);
                     naverMap.moveCamera(cameraUpdate);
 
             }
@@ -233,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         return url;
     }
     //맵검색을 비동기 식으로 처리한다.
+    /*
     public class MapSearchTask extends AsyncTask<Void, Void, String>{
         String str=editText.getText().toString();
         List<Address> addressList = null;
@@ -249,19 +254,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             catch (IOException e) {
                 e.printStackTrace();
             }
-
-            System.out.println(addressList.get(0).toString());
-            // 콤마를 기준으로 split
-            String []splitStr = addressList.get(0).toString().split(",");
-            String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
-            System.out.println(address);
-
-            String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
-            String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
-            System.out.println(latitude);
-            System.out.println(longitude);
-
-            String result = latitude+","+longitude;
+            AddressPasing addressPasing=new AddressPasing(addressList);
+            String result= addressPasing.result();
 
             return result;
         }
@@ -292,167 +286,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
             //현재위치를 가지고 온다
+            // 아직 현재위치 기반 길찾기는 todo로
             GpsTracker gpsTracker = new GpsTracker(MainActivity.this);
             double currentLatitude = gpsTracker.getLatitude();
             double currentLongitude = gpsTracker.getLongitude();
 
-            LatLng startPoint = new LatLng(currentLatitude,currentLongitude);
+
+           // LatLng startPoint = new LatLng(currentLatitude,currentLongitude);
 
             //현재 보고있는 화면의 중심을 기준으로 좌표를 만들어주는 메서드
-            //LatLng startPoint=getCurrentPosition(naverMap);
+            LatLng startPoint=getCurrentPosition(naverMap);
 
 
             //검색한 좌표와 현재 위치를 넣어서 url을 가지고 온다.
-            String url=TMapWalkerTrackerURL(startPoint, endPoint);
+             String url=TMapWalkerTrackerURL(startPoint, endPoint);
 
             //검색한 url을 가지고 데이터를 파싱한다
-            NetworkTask networkTask = new NetworkTask(url, null);
-            networkTask.execute();
+             GetLoute getLoute = new GetLoute(url, null,naverMap,totalDistanceText,totalTimeText);
+             getLoute.execute();
 
 //            //검색한 좌표로 카메라 이동
-//            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(endPoint);
-//            naverMap.moveCamera(cameraUpdate);
+            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(endPoint);
+            naverMap.moveCamera(cameraUpdate);
         }
     }
-    //URL을 가지고 검색하는 스레드
-    public class NetworkTask extends AsyncTask<Void, Void, String> {
 
-        private String url;
-        private ContentValues values;
-        ArrayList<LatLng> latLngArrayList=new ArrayList<LatLng>();
-        Marker marker = new Marker();
-        TextView totalDistanceText = findViewById(R.id.totalDistance);
-        TextView totalTimeText = findViewById(R.id.totalTime);
-        public NetworkTask(String url, ContentValues values) {
-            this.url = url;
-            this.values = values;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String result;
-            // 요청 결과를 저장할 변수.
-            RequestHttpURLConnection requestHttpURLConnection = new RequestHttpURLConnection();
-            result = requestHttpURLConnection.request(url, values);
-            // 해당 URL로 부터 결과물을 얻어온다.
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
-
-            try {
-                //전체 데이터를 제이슨 객체로 변환
-                JSONObject root = new JSONObject(s);
-                System.out.println("제일 상위 "+root);
-
-
-                //총 경로 횟수 featuresArray에 저장
-                JSONArray featuresArray = root.getJSONArray("features");
-
-                for (int i = 0; i < featuresArray.length(); i++){
-                    JSONObject featuresIndex = (JSONObject) featuresArray.get(i);
-//                    System.out.println("뭐가 저장 됨?"+featuresIndex);
-                    JSONObject geometry =  featuresIndex.getJSONObject("geometry");
-
-                    String type =  geometry.getString("type");
-
-                    //type이 LineString일 경우 좌표값이 하나가 아니라 여러개로 책정이 된다.
-                    //전부 뽑아서 전체경로에 추가해준다.
-                    //type이 Point일 경우에는 출발점, 경유지, 도착지점 이 세경우 뿐인데
-                    //세가지는 구분하는 기준은 properties의 pointType으로 구분 가능하다.
-
-                    if(type.equals("LineString")){
-
-
-                        JSONArray coordinatesArray = geometry.getJSONArray("coordinates");
-
-//                        System.out.println("라인이 여러개다"+coordinatesArray);
-
-                        for(int j=0; j<coordinatesArray.length(); j++){
-
-//                            System.out.println(coordinatesArray.get(j).getClass().getName());
-
-                            JSONArray pointArray = (JSONArray) coordinatesArray.get(j);
-                            double longitude =Double.parseDouble(pointArray.get(0).toString());
-                            double latitude =Double.parseDouble(pointArray.get(1).toString());
-
-                            latLngArrayList.add(new LatLng(latitude, longitude));
-                            System.out.println("LineString를 저장 ");
-//                            System.out.println("만들어진 어레이는  "+latLngArrayList);
-//                            System.out.println("총저장된 경로의 갯수는"+latLngArrayList.size());
-                        }
-                    }
-
-                    if(type.equals("Point")){
-                        JSONObject properties =  featuresIndex.getJSONObject("properties");
-                        try{
-                            double totalDistance = Integer.parseInt(properties.getString("totalDistance"));
-
-
-                            totalDistanceText.setText("총 거리 :"+totalDistance/1000+" km");
-
-                            int totalTime = Integer.parseInt(properties.getString("totalTime"));
-                            totalTimeText.setText("총 거리 :"+ totalTime/60+"분");
-
-                        }catch (Exception e){
-
-                        }
-
-                        String pointType = properties.getString("pointType");
-
-
-                        double longitude =  Double.parseDouble(geometry.getJSONArray("coordinates").get(0).toString());
-                        double latitude =  Double.parseDouble(geometry.getJSONArray("coordinates").get(1).toString());
-//                        System.out.println("Point를 저장 ");
-//                        latLngArrayList.add(new LatLng(latitude, longitude));
-
-                        if(pointType.equals("SP")){
-                            System.out.println("시작지점이다");
-
-                        }
-                        else if(pointType.equals("GP")){
-
-                            System.out.println("중간지점이다");
-                        }
-                        else if(pointType.equals("EP")){
-
-                            System.out.println("끝지점이다");
-
-                        }
-//                        marker.setPosition(new LatLng(latitude, longitude));
-//                        System.out.println(latitude+","+longitude);
-//                        marker.setMap(naverMap);
-                    }
-
-                    System.out.println("총저장된 경로의 갯수는"+latLngArrayList.size());
-
-
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            PolylineOverlay polylineOverlay = new PolylineOverlay();
-            polylineOverlay.setCoords(latLngArrayList);
-            polylineOverlay.setWidth(10);
-            polylineOverlay.setPattern(10, 5);
-            polylineOverlay.setCapType(PolylineOverlay.LineCap.Round);
-            polylineOverlay.setJoinType(PolylineOverlay.LineJoin.Round);
-
-            polylineOverlay.setMap(naverMap);
-
-
-
-        }
-    }
+     */
     // 마커 정보 저장시킬 변수들 선언
     private Vector<LatLng> markersPosition;
     private Vector<Marker> activeMarkers;
