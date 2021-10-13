@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 //누를때마다 새로운 마커랑 폴리라인이 기존것과 중복안되게 null처리
                 markerStart.setMap(null);
                 markerEnd.setMap(null);
+                polylineOverlay.setMap(null);
 
                 //입력받은 주소 변환
                 String strStart=editTextStart.getText().toString();

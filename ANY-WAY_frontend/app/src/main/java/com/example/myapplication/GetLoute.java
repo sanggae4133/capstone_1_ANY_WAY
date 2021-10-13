@@ -151,9 +151,7 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        polylineOverlay=null;
-        System.out.println(latLngArrayList);
-        PolylineOverlay polylineOverlay = new PolylineOverlay();
+
         polylineOverlay.setCoords(latLngArrayList);
         polylineOverlay.setWidth(10);
         polylineOverlay.setPattern(10, 5);
