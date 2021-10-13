@@ -101,6 +101,12 @@ def app_register(request):
         search_userid = request.POST.get('userid', '')
         search_userpw = request.POST.get('userpw', '')
         search_name = request.POST.get('name', '')
+
+        # data = JSONParser().parse(request)
+        # search_userid = data['userid']
+        # search_userpw = data['userpw']
+        # search_name = data['name']
+        print("id = ", search_userid, "pw = ", search_userpw, "name = ",search_name)
         data = {
             "name": search_name,
             "userid": search_userid,
@@ -120,6 +126,8 @@ def app_check_id(request):
     if request.method == 'POST':
         print("리퀘스트 로그" + str(request.body))
         input_id = request.POST.get('userid', '')
+        # data = JSONParser().parse(request)
+        # input_id = data['userid']
         query_set = Account.objects.all()  # 모든 객체 다 읽어옴
         for user in query_set:
             print("입력:", input_id, " 기존: ", user.userid)
