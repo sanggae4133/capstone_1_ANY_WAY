@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -68,6 +69,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationSource locationSource;
     private NaverMap naverMap;
     private Geocoder geocoder;
+    ArrayList<LatLng> latLngArrayList;
+    PolylineOverlay polylineOverlay=new PolylineOverlay();
+    Marker markerStart;
+    Marker markerEnd;
     TextView totalDistanceText;
     TextView totalTimeText;
     EditText editTextStart;
@@ -80,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        markerStart = new Marker();
+        markerEnd=new Marker();
         totalDistanceText=findViewById(R.id.totalDistance);
         totalTimeText=findViewById(R.id.totalTime);
         editTextStart = findViewById(R.id.editTextStart);
@@ -155,6 +162,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Button.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v){
+                //누를때마다 새로운 마커랑 폴리라인이 기존것과 중복안되게 null처리
+                markerStart.setMap(null);
+                markerEnd.setMap(null);
+
+                //입력받은 주소 변환
                 String strStart=editTextStart.getText().toString();
                 String strEnd=editTextEnd.getText().toString();
                 List<Address> addressListStart = null,addressListEnd = null;
@@ -177,14 +189,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // 좌표(위도, 경도) 생성
                     LatLng Startpoint = new LatLng(Double.parseDouble(addressPasingStart.getlatitude()), Double.parseDouble(addressPasingStart.getlongitude()));
                     LatLng Endpoint = new LatLng(Double.parseDouble(addressPasingEnd.getlatitude()), Double.parseDouble(addressPasingEnd.getlongitude()));
-                    // 마커 생성
-                    Marker markerStart = new Marker();
-                    Marker markerEnd=new Marker();
+                    // 마커 표시
                     markerStart.setPosition(Startpoint);
                     markerEnd.setPosition(Endpoint);
                     // 마커 추가
                     markerStart.setMap(naverMap);
                     markerEnd.setMap(naverMap);
+
+                    //시작,도착지점을 Tmap서버에 보내기위해 url형식대로 만들어줌
+                    TMapWalkerTrackerURL(Startpoint,Endpoint);
+                    //System.out.println(url);
+
 
                     // 해당 좌표로 화면 줌
 //                    naverMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
@@ -207,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     //TMap보행자 경로를 검색해주는 메서드
     //출발좌표와 도팍 좌표를 입력하여 보행자길찾기가 가능하다
-    public String TMapWalkerTrackerURL(LatLng startPoint, LatLng endPoint) {
+    public void TMapWalkerTrackerURL(LatLng startPoint, LatLng endPoint) {
 
         String url = null;
 
@@ -234,10 +249,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
 
-        return url;
+        //url을 넘겨 tmap에서 받은 경로를 네이버지도로 표시
+        GetLoute getLoute=new GetLoute(url,null,naverMap,totalDistanceText,totalTimeText,polylineOverlay);
+        getLoute.execute();
     }
     //맵검색을 비동기 식으로 처리한다.
-    /*
+    /* 현재위치기반 길찾기는 구현안할수도있으니 일단 보류
     public class MapSearchTask extends AsyncTask<Void, Void, String>{
         String str=editText.getText().toString();
         List<Address> addressList = null;

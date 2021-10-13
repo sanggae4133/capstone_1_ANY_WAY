@@ -5,7 +5,7 @@ import android.location.Address;
 import java.util.List;
 
 /*
- 텍스트창으로 받은 주소를  경도,위도로 파싱하는 클래스
+ 텍스트창으로 받은 주소에서 위도,경도만 파싱하는 클래스
  */
 public class AddressPasing {
     private List<Address> addressList;

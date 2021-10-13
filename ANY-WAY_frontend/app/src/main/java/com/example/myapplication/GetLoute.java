@@ -2,7 +2,9 @@ package com.example.myapplication;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.naver.maps.geometry.LatLng;
@@ -24,14 +26,16 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
     private NaverMap naverMap;
     ArrayList<LatLng> latLngArrayList=new ArrayList<LatLng>();
     Marker marker = new Marker();
+    PolylineOverlay polylineOverlay;
     TextView totalDistanceText;
     TextView totalTimeText;
-    public GetLoute(String url, ContentValues values,NaverMap naverMa,TextView totalDistanceText,TextView totalTimeText) {
+    public GetLoute(String url, ContentValues values,NaverMap naverMap,TextView totalDistanceText,TextView totalTimeText,PolylineOverlay polylineOverlay) {
         this.url = url;
         this.values = values;
         this.naverMap=naverMap;
         this.totalTimeText=totalTimeText;
         this.totalDistanceText=totalDistanceText;
+        this.polylineOverlay=polylineOverlay;
     }
 
     @Override
@@ -48,6 +52,7 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
         result = requestHttpURLConnection.request(url, values);
         // 해당 URL로 부터 결과물을 얻어온다.
         return result;
+
     }
 
     @Override
@@ -146,10 +151,13 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        polylineOverlay=null;
+        System.out.println(latLngArrayList);
         PolylineOverlay polylineOverlay = new PolylineOverlay();
         polylineOverlay.setCoords(latLngArrayList);
         polylineOverlay.setWidth(10);
         polylineOverlay.setPattern(10, 5);
+        polylineOverlay.setColor(Color.GREEN);
         polylineOverlay.setCapType(PolylineOverlay.LineCap.Round);
         polylineOverlay.setJoinType(PolylineOverlay.LineJoin.Round);
 
