@@ -25,7 +25,7 @@ class LoginActivity2 : AppCompatActivity() {
         //baseURl http://~~~:8000/
         // ~~~ 부분에 ipconfig ipv4 주소 넣어야 함
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://172.30.1.55:8000/")
+            .baseUrl(retrofitSetting.getBaseurl())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -55,8 +55,9 @@ class LoginActivity2 : AppCompatActivity() {
                     dialog.setTitle(login?.msg)
                     dialog.setMessage(login?.code)
                     dialog.show()
-
-                    startActivity(intent)
+                    if(login?.code =="0000"){
+                        startActivity(intent)
+                    }
                 }
 
             })
