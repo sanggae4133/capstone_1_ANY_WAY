@@ -23,9 +23,9 @@ class RegisterActivity2 : AppCompatActivity() {
 
     // 백엔드 통신  retrofit 설정
     var retrofit = Retrofit.Builder()
-        .baseUrl("http://172.30.1.21:8000/")
+        .baseUrl("http://172.30.1.55:8000/")
         .addConverterFactory(GsonConverterFactory.create())
-        .build()!!
+        .build()
 
     var registerService: RegisterService = retrofit.create(RegisterService::class.java)
 

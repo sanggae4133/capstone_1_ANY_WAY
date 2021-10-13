@@ -25,7 +25,7 @@ class LoginActivity2 : AppCompatActivity() {
         //baseURl http://~~~:8000/
         // ~~~ 부분에 ipconfig ipv4 주소 넣어야 함
         var retrofit = Retrofit.Builder()
-            .baseUrl("http://172.30.1.21:8000/")
+            .baseUrl("http://172.30.1.55:8000/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
@@ -35,7 +35,7 @@ class LoginActivity2 : AppCompatActivity() {
         login_button.setOnClickListener{
             var text1 = login_email.text.toString()
             var text2 = login_password.text.toString()
-
+            val intent = Intent(this, MainActivity::class.java)
             loginService.requestLogin(text1,text2).enqueue(object: Callback<Login> {
                 override fun onFailure(call: Call<Login>, t: Throwable) {
                     //실패할 경우
@@ -55,6 +55,8 @@ class LoginActivity2 : AppCompatActivity() {
                     dialog.setTitle(login?.msg)
                     dialog.setMessage(login?.code)
                     dialog.show()
+
+                    startActivity(intent)
                 }
 
             })
