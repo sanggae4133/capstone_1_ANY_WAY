@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -201,12 +202,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     TMapWalkerTrackerURL(Startpoint,Endpoint);
                     //System.out.println(url);
 
+                    InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
 
                     // 해당 좌표로 화면 줌
 //                    naverMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
 
+                /*
                     CameraUpdate cameraUpdate = CameraUpdate.scrollTo(Startpoint);
                     naverMap.moveCamera(cameraUpdate);
+
+                 */
 
             }
         });

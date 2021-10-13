@@ -7,7 +7,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.geometry.LatLngBounds;
+import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolylineOverlay;
@@ -160,6 +164,13 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
         polylineOverlay.setJoinType(PolylineOverlay.LineJoin.Round);
 
         polylineOverlay.setMap(naverMap);
+
+        //출발,도착지점이 화면에 경로를 중심으로 보이도록 카메라 줌 설정
+        LatLngBounds latLngBounds=new LatLngBounds( latLngArrayList.get(0), latLngArrayList.get(latLngArrayList.size()-1));
+        CameraUpdate cameraUpdate=CameraUpdate.fitBounds(latLngBounds);
+        naverMap.moveCamera(cameraUpdate);
+
+
 
 
 
