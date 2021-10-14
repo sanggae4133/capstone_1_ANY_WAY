@@ -1,17 +1,36 @@
 package com.example.myapplication;
 import android.Manifest;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.RoundCap;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.CameraUpdate;
@@ -20,11 +39,23 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.skt.Tmap.TMapData;
+import com.skt.Tmap.TMapPoint;
+import com.skt.Tmap.TMapPolyLine;
+import com.skt.Tmap.TMapView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -137,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 //누를때마다 새로운 마커랑 폴리라인이 기존것과 중복안되게 null처리
                 markerStart.setMap(null);
                 markerEnd.setMap(null);
+                polylineOverlay.setMap(null);
 
                 //입력받은 주소 변환
                 String strStart=editTextStart.getText().toString();
@@ -146,10 +178,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
                     addressListStart = geocoder.getFromLocationName(
                             strStart, // 주소
-                            5); // 최대 검색 결과 개수
+                            10); // 최대 검색 결과 개수
                     addressListEnd = geocoder.getFromLocationName(
                             strEnd, // 주소
-                            5); // 최대 검색 결과 개수
+                            10); // 최대 검색 결과 개수
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -158,26 +190,50 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     AddressPasing addressPasingStart=new AddressPasing(addressListStart);
                     AddressPasing addressPasingEnd=new AddressPasing(addressListEnd);
 
-                    // 좌표(위도, 경도) 생성
-                    LatLng Startpoint = new LatLng(Double.parseDouble(addressPasingStart.getlatitude()), Double.parseDouble(addressPasingStart.getlongitude()));
-                    LatLng Endpoint = new LatLng(Double.parseDouble(addressPasingEnd.getlatitude()), Double.parseDouble(addressPasingEnd.getlongitude()));
-                    // 마커 표시
-                    markerStart.setPosition(Startpoint);
-                    markerEnd.setPosition(Endpoint);
-                    // 마커 추가
-                    markerStart.setMap(naverMap);
-                    markerEnd.setMap(naverMap);
+                    try {
+                        // 좌표(위도, 경도) 생성
+                        LatLng Startpoint = new LatLng(Double.parseDouble(addressPasingStart.getlatitude()), Double.parseDouble(addressPasingStart.getlongitude()));
+                        LatLng Endpoint = new LatLng(Double.parseDouble(addressPasingEnd.getlatitude()), Double.parseDouble(addressPasingEnd.getlongitude()));
+                        // 마커 표시
+                        markerStart.setPosition(Startpoint);
+                        markerEnd.setPosition(Endpoint);
+                        // 마커 추가
+                        markerStart.setMap(naverMap);
+                        markerEnd.setMap(naverMap);
 
-                    //시작,도착지점을 Tmap서버에 보내기위해 url형식대로 만들어줌
-                    TMapWalkerTrackerURL(Startpoint,Endpoint);
-                    //System.out.println(url);
+                        //시작,도착지점을 Tmap서버에 보내기위해 url형식대로 만들어줌
+                        TMapWalkerTrackerURL(Startpoint, Endpoint);
+                        //System.out.println(url);
+                    }
+                    catch (IndexOutOfBoundsException e){
+                        //없는 주소를 입력시 다시 입력하라는 팝업이 뜬다.
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setMessage("없는 주소입니다.다시 입력해주세요.")
+                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {      // 버튼1 (직접 작성)
+                                    public void onClick(DialogInterface dialog, int which){
+                                    }
+                                })
+                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {     // 버튼2 (직접 작성)
+                                    public void onClick(DialogInterface dialog, int which){
+                                    }
+                                })
+                                .show();
+
+
+                    }
+                    //검색완료 후 키보드 내리기
+                    InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                    manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
 
                     // 해당 좌표로 화면 줌
 //                    naverMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
 
+                /*
                     CameraUpdate cameraUpdate = CameraUpdate.scrollTo(Startpoint);
                     naverMap.moveCamera(cameraUpdate);
+
+                 */
 
             }
         });

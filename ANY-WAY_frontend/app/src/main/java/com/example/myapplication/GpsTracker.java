@@ -2,17 +2,30 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.app.Service;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
+
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.PolylineOverlay;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 
 public class GpsTracker extends Service implements LocationListener {
@@ -136,7 +149,7 @@ public class GpsTracker extends Service implements LocationListener {
             //ex)com.example.sharedbodong
 
 
-            locationManager.removeUpdates(GpsTracker.this);
+            locationManager.removeUpdates(com.example.myapplication.GpsTracker.this);
 
 
         }
