@@ -1,17 +1,11 @@
 package com.example.myapplication;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.naver.maps.geometry.LatLng;
-import com.naver.maps.geometry.LatLngBounds;
-import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolylineOverlay;
@@ -20,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 //출발,도착지를 요청하는 url을 요청해서 경로를 받아 네이버지도폴리라인을 그리는 클래스
@@ -155,7 +150,9 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        polylineOverlay=null;
+        System.out.println(latLngArrayList);
+        PolylineOverlay polylineOverlay = new PolylineOverlay();
         polylineOverlay.setCoords(latLngArrayList);
         polylineOverlay.setWidth(10);
         polylineOverlay.setPattern(10, 5);
@@ -164,13 +161,6 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
         polylineOverlay.setJoinType(PolylineOverlay.LineJoin.Round);
 
         polylineOverlay.setMap(naverMap);
-
-        //출발,도착지점이 화면에 경로를 중심으로 보이도록 카메라 줌 설정
-        LatLngBounds latLngBounds=new LatLngBounds( latLngArrayList.get(0), latLngArrayList.get(latLngArrayList.size()-1));
-        CameraUpdate cameraUpdate=CameraUpdate.fitBounds(latLngBounds);
-        naverMap.moveCamera(cameraUpdate);
-
-
 
 
 

@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     EditText editTextStart;
     EditText editTextEnd;
     Button Button;
-
+    getAltitude getAltitudes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         editTextStart = findViewById(R.id.editTextStart);
         editTextEnd=findViewById(R.id.editTextEnd);
         Button = findViewById(R.id.button);
-
         //지도 사용권한을 받아 온다.
         locationSource =
                 new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
@@ -170,10 +169,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 markerEnd.setMap(null);
                 polylineOverlay.setMap(null);
 
+                getAltitudes = new getAltitude(MainActivity.this); // 고도 정보 관련
+
                 //입력받은 주소 변환
                 String strStart=editTextStart.getText().toString();
                 String strEnd=editTextEnd.getText().toString();
                 List<Address> addressListStart = null,addressListEnd = null;
+
                 try {
                     // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
                     addressListStart = geocoder.getFromLocationName(
@@ -186,47 +188,59 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 catch (IOException e) {
                     e.printStackTrace();
                 }
-                    //지오코딩으로 받은 주소를 위도,경도로 파싱하는 클래스
-                    AddressPasing addressPasingStart=new AddressPasing(addressListStart);
-                    AddressPasing addressPasingEnd=new AddressPasing(addressListEnd);
-
-                    try {
-                        // 좌표(위도, 경도) 생성
-                        LatLng Startpoint = new LatLng(Double.parseDouble(addressPasingStart.getlatitude()), Double.parseDouble(addressPasingStart.getlongitude()));
-                        LatLng Endpoint = new LatLng(Double.parseDouble(addressPasingEnd.getlatitude()), Double.parseDouble(addressPasingEnd.getlongitude()));
-                        // 마커 표시
-                        markerStart.setPosition(Startpoint);
-                        markerEnd.setPosition(Endpoint);
-                        // 마커 추가
-                        markerStart.setMap(naverMap);
-                        markerEnd.setMap(naverMap);
-
-                        //시작,도착지점을 Tmap서버에 보내기위해 url형식대로 만들어줌
-                        TMapWalkerTrackerURL(Startpoint, Endpoint);
-                        //System.out.println(url);
-                    }
-                    catch (IndexOutOfBoundsException e){
-                        //없는 주소를 입력시 다시 입력하라는 팝업이 뜬다.
-                        new AlertDialog.Builder(MainActivity.this)
-                                .setMessage("없는 주소입니다.다시 입력해주세요.")
-                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {      // 버튼1 (직접 작성)
-                                    public void onClick(DialogInterface dialog, int which){
-                                    }
-                                })
-                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {     // 버튼2 (직접 작성)
-                                    public void onClick(DialogInterface dialog, int which){
-                                    }
-                                })
-                                .show();
+                //지오코딩으로 받은 주소를 위도,경도로 파싱하는 클래스
+                AddressPasing addressPasingStart=new AddressPasing(addressListStart);
+                AddressPasing addressPasingEnd=new AddressPasing(addressListEnd);
 
 
-                    }
-                    //검색완료 후 키보드 내리기
-                    InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                    manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                // 제안사항 : addressListStart 나 End 리스트 사이즈가 0이면 주소를 못찾았다는 것이니깐
+                // 밑에서 try catch 문으로 하는 방법보다 여기서 핸들링 하는건 어떨까 라는 생각 들었음
 
 
-                    // 해당 좌표로 화면 줌
+                /*System.out.println(addressListStart.size());
+                for (int i = 0; i < addressListStart.size(); i++) {
+                    System.out.print(addressListStart.get(i)+" ");
+                }
+                System.out.println();*/
+
+                try {
+                    // 좌표(위도, 경도) 생성
+                    LatLng Startpoint = new LatLng(Double.parseDouble(addressPasingStart.getlatitude()), Double.parseDouble(addressPasingStart.getlongitude()));
+                    LatLng Endpoint = new LatLng(Double.parseDouble(addressPasingEnd.getlatitude()), Double.parseDouble(addressPasingEnd.getlongitude()));
+                    System.out.println(addressPasingStart.getlatitude() + " " + addressPasingStart.getlongitude());
+                    // 마커 표시
+                    markerStart.setPosition(Startpoint);
+                    markerEnd.setPosition(Endpoint);
+                    // 마커 추가
+                    markerStart.setMap(naverMap);
+                    markerEnd.setMap(naverMap);
+
+                    //시작,도착지점을 Tmap서버에 보내기위해 url형식대로 만들어줌
+                    TMapWalkerTrackerURL(Startpoint, Endpoint);
+                    //System.out.println(url);
+                }
+                catch (IndexOutOfBoundsException | NullPointerException exception){
+                    //없는 주소를 입력시 다시 입력하라는 팝업이 뜬다.
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setMessage("없는 주소입니다.다시 입력해주세요.")
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {      // 버튼1 (직접 작성)
+                                public void onClick(DialogInterface dialog, int which){
+                                }
+                            })
+                            .setNegativeButton("취소", new DialogInterface.OnClickListener() {     // 버튼2 (직접 작성)
+                                public void onClick(DialogInterface dialog, int which){
+                                }
+                            })
+                            .show();
+
+
+                }
+                //검색완료 후 키보드 내리기
+                InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+
+                // 해당 좌표로 화면 줌
 //                    naverMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
 
                 /*
@@ -258,13 +272,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         try {
             String appKey = "l7xx47b4e0ab8cf14541ba920ca916d19d30";
 
-
             String startX = new Double(startPoint.longitude).toString();
             String startY = new Double(startPoint.latitude).toString();
             String endX = new Double(endPoint.longitude).toString();
             String endY = new Double(endPoint.latitude).toString();
 
+            System.out.println("출발 좌표: "+startX+" "+startY+" 도착 좌표: "+endX+" "+endY);
             String startName = URLEncoder.encode("출발지", "UTF-8");
+
+            System.out.println(getAltitudes.execute(startX, startY).get());
+            //getAltitudes.execute(startX, startY) 으로 실행 하고 get() 하면 고도(문자열)로 리턴함
 
             String endName = URLEncoder.encode("도착지", "UTF-8");
             url = "https://apis.openapi.sk.com/tmap/routes/pedestrian?version=1&callback=result&appKey=" + appKey
@@ -273,6 +290,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -385,7 +404,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         activeMarkers = new Vector<Marker>();
     }
 }
-
 
 
 
