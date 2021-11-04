@@ -26,8 +26,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="20dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="출발지점을 입력하세요"
+        android:inputType="textPersonName"
+        android:text="sangdo station"
         app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map" />
@@ -39,8 +40,9 @@
         android:layout_marginTop="92dp"
         android:layout_marginEnd="20dp"
         android:ems="10"
-        android:inputType="textPersonName"
         android:hint="도착지점을 입력하세요"
+        android:inputType="textPersonName"
+        android:text="dongjak station"
         app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map" />

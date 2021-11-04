@@ -45,8 +45,8 @@ public class getAltitude extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... strings) {
-        String lon = cutStr(strings[0]);
-        String lat = cutStr(strings[1]);
+        String lon = cutStr(strings[0]); //경도 124~134
+        String lat = cutStr(strings[1]); //위도 33~43
         System.out.println("lat = " + lat+" lon = " + lon);
 
         // google elevation api 로 response 받아옴 response 는 json 형태가 아니라 json 을 받을 수 있는 url을 품고 있는 형태

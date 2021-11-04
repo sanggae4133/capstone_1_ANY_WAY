@@ -27,6 +27,7 @@ public class AddressPasing {
         String result= latitude+","+longitude;
         return result;
     }
+    /*
     public String getlatitude() {
         System.out.println(addressList.get(0).toString());
         // 콤마를 기준으로 split
@@ -47,5 +48,30 @@ public class AddressPasing {
         String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
         String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
         return longitude;
+    }*/
+
+    public String getlatitude(String input) {
+        System.out.println(input.toString());
+        // 콤마를 기준으로 split
+        String[] splitStr = input.toString().split(",");
+        String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1, splitStr[0].length() - 2); // 주소
+        System.out.println(address);
+
+        String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
+        return latitude;
     }
+    public String getlongitude(String input){
+        System.out.println(input);
+        // 콤마를 기준으로 split
+        String[] splitStr = input.toString().split(",");
+        String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1, splitStr[0].length() - 2); // 주소
+        System.out.println(address);
+
+        String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
+        String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
+        return longitude;
+    }
+
+
+
 }
