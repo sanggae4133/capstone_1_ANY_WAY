@@ -26,6 +26,7 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
@@ -71,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     EditText editTextStart;
     EditText editTextEnd;
     Button Button;
+    Button routbutton;
     getAltitude getAltitudes;
     getCoordinate getCoordinates;
     Handler handler = new Handler();
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         editTextStart = findViewById(R.id.editTextStart);
         editTextEnd = findViewById(R.id.editTextEnd);
         Button = findViewById(R.id.button);
+        routbutton=findViewById(R.id.routbutton);
         polylineOverlay = new PolylineOverlay();
 
         //지도 사용권한을 받아 온다.
@@ -141,13 +144,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //네이버 맵에 locationSource를 셋하면 위치 추적 기능을 사용 할 수 있다
         naverMap.setLocationSource(locationSource);
         //위치 추적 모드 지정 가능 내 위치로 이동
+        //초기 카메라를 현재위치로
+        LocationOverlay locationOverlay = naverMap.getLocationOverlay();
+        locationOverlay.setVisible(true);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
-//        //현재위치 버튼 사용가능
+        //현재위치 버튼 사용가능
         naverMap.getUiSettings().setLocationButtonEnabled(true);
-        LatLng initialPosition = new LatLng(37.506855, 127.066242);
-        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(initialPosition);
-        naverMap.moveCamera(cameraUpdate);
-
+        //LatLng initialPosition = new LatLng(37.506855, 127.066242);
+        //CameraUpdate cameraUpdate = CameraUpdate.scrollTo(initialPosition);
+        //naverMap.moveCamera(cameraUpdate);
 
         // 카메라 이동 되면 호출 되는 이벤트
         naverMap.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
@@ -223,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 Log.i("getLoute 스레드 끝", " ");
 
-                for (int i = 0; i < latLngArrayList.size() ; i++) {
+                for (int i = 0; i < latLngArrayList.size(); i++) {
                     System.out.println(latLngArrayList.get(i));
                 }
 
@@ -232,8 +237,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 try {
                     InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                     manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                }
-                catch(NullPointerException e){
+                } catch (NullPointerException e) {
                     System.out.println("이미 키보드 없음^^");
                 }
 
@@ -248,11 +252,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 // 영역이 온전히 보이는 좌표와 최대 줌 레벨로 카메라의 위치를 변경합니다.
                 // 경로의 첫번째포인트,마지막포인트를 지도에 꽉차게 보여줌
-                LatLng firstLatlng=latLngArrayList.get(0);
-                LatLng lastLatlng=latLngArrayList.get(latLngArrayList.size()-1);
-                LatLngBounds latLngBounds=new LatLngBounds(firstLatlng,lastLatlng);
-                CameraUpdate cameraUpdate= CameraUpdate.fitBounds(latLngBounds);
+                LatLng firstLatlng = latLngArrayList.get(0);
+                LatLng lastLatlng = latLngArrayList.get(latLngArrayList.size() - 1);
+                LatLngBounds latLngBounds = new LatLngBounds(firstLatlng, lastLatlng);
+                CameraUpdate cameraUpdate = CameraUpdate.fitBounds(latLngBounds);
                 naverMap.moveCamera(cameraUpdate);
+            }
 
 
 
@@ -265,6 +270,27 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                  */
 
+        });
+
+        //버튼을 누르면 gps작동, 이제 위치이동이벤트가 발생할때 좌표를 받고 tts를 구현하자
+        routbutton.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //길찾기버튼을 누르면 확대되면서 tts서비스
+                System.out.print("해치웠나?");
+                LatLng firstLatlng = latLngArrayList.get(0);
+                double latitute=firstLatlng.latitude;
+                double longtitute=firstLatlng.longitude;
+                System.out.println(firstLatlng.latitude);
+                CameraPosition cameraPosition = new CameraPosition(
+                        new LatLng(latitute,longtitute),   // 위치 지정
+                        18,                           // 줌 레벨
+                        45,                          // 기울임 각도
+                        45                           // 방향
+                );
+                naverMap.setCameraPosition(cameraPosition);
+                naverMap.setLocationTrackingMode(LocationTrackingMode.Face);
             }
         });
 

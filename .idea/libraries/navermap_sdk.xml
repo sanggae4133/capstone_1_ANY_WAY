@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="navermap-sdk">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/ANY-WAY_frontend/app/build/intermediates/compressed_assets/debug/out/assets/navermap-sdk/NOTICE.jar!/" />
+      <root url="jar://$PROJECT_DIR$/ANY-WAY_frontend/app/build/intermediates/compressed_assets/debug/out/assets/navermap-sdk/LICENSE.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
