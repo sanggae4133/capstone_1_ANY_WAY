@@ -1,10 +1,14 @@
-package com.example.myapplication
+package com.example.myapplication.Login
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import com.example.myapplication.MainActivity
+import com.example.myapplication.R
+import com.example.myapplication.Register.RegisterActivity2
+import com.example.myapplication.retrofitSetting
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
@@ -14,7 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class LoginActivity2 : AppCompatActivity() {
-    var login:Login? = null
+    var login: Login? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_main)

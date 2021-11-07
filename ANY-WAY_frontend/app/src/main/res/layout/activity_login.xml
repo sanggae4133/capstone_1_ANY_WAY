@@ -23,6 +23,7 @@
         android:ems="10"
         android:hint="이메일"
         android:inputType="textEmailAddress"
+        android:text="1"
         app:layout_constraintBottom_toTopOf="@+id/login_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -35,6 +36,7 @@
         android:ems="10"
         android:hint="비밀번호"
         android:inputType="textPassword"
+        android:text="1"
         app:layout_constraintBottom_toTopOf="@+id/login_button"
         app:layout_constraintStart_toStartOf="@+id/login_email" />
 

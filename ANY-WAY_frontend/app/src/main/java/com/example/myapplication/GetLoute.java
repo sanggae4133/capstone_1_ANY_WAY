@@ -1,17 +1,13 @@
 package com.example.myapplication;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.naver.maps.geometry.LatLng;
-import com.naver.maps.geometry.LatLngBounds;
-import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PolylineOverlay;
@@ -20,7 +16,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+
+import com.example.myapplication.getAltitude;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 //출발,도착지를 요청하는 url을 요청해서 경로를 받아 네이버지도폴리라인을 그리는 클래스
 public class GetLoute extends AsyncTask<Void, Void, String>  {
@@ -28,18 +37,24 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
     private String url;
     private ContentValues values;
     private NaverMap naverMap;
+    private getAltitude altitude;
     ArrayList<LatLng> latLngArrayList=new ArrayList<LatLng>();
     Marker marker = new Marker();
     PolylineOverlay polylineOverlay;
     TextView totalDistanceText;
     TextView totalTimeText;
-    public GetLoute(String url, ContentValues values,NaverMap naverMap,TextView totalDistanceText,TextView totalTimeText,PolylineOverlay polylineOverlay) {
+    getAltitude getAltitudes;
+    private Context mContext = null ;
+    ProgressDialog asyncDialog;
+
+    public GetLoute(String url, ContentValues values,NaverMap naverMap,TextView totalDistanceText,TextView totalTimeText,PolylineOverlay polylineOverlay, Context context) {
         this.url = url;
         this.values = values;
         this.naverMap=naverMap;
         this.totalTimeText=totalTimeText;
         this.totalDistanceText=totalDistanceText;
         this.polylineOverlay=polylineOverlay;
+        mContext = context;
     }
 
     @Override
@@ -63,7 +78,6 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
         //doInBackground()로 부터 리턴된 값이 onPostExecute()의 매개변수로 넘어오므로 s를 출력한다.
-
         try {
             //전체 데이터를 제이슨 객체로 변환
             JSONObject root = new JSONObject(s);
@@ -100,6 +114,7 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
                         double longitude =Double.parseDouble(pointArray.get(0).toString());
                         double latitude =Double.parseDouble(pointArray.get(1).toString());
 
+                        //System.out.println("경로 중 지점 elevation = " + elevation);
                         latLngArrayList.add(new LatLng(latitude, longitude));
                         System.out.println("LineString를 저장 ");
 //                            System.out.println("만들어진 어레이는  "+latLngArrayList);
@@ -152,10 +167,12 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
 
 
             }
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
+        polylineOverlay=null;
+        System.out.println(latLngArrayList);
+        PolylineOverlay polylineOverlay = new PolylineOverlay();
         polylineOverlay.setCoords(latLngArrayList);
         polylineOverlay.setWidth(10);
         polylineOverlay.setPattern(10, 5);
@@ -165,14 +182,6 @@ public class GetLoute extends AsyncTask<Void, Void, String>  {
 
         polylineOverlay.setMap(naverMap);
 
-        //출발,도착지점이 화면에 경로를 중심으로 보이도록 카메라 줌 설정
-        LatLngBounds latLngBounds=new LatLngBounds( latLngArrayList.get(0), latLngArrayList.get(latLngArrayList.size()-1));
-        CameraUpdate cameraUpdate=CameraUpdate.fitBounds(latLngBounds);
-        naverMap.moveCamera(cameraUpdate);
-
-
-
-
-
     }
+
 }

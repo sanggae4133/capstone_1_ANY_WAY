@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.Login
 
 data class Login(
     val code: String,

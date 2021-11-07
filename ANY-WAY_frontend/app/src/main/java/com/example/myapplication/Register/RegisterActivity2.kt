@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.Register
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -6,6 +6,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
+import com.example.myapplication.R
+import com.example.myapplication.retrofitSetting
 import kotlinx.android.synthetic.main.activity_join.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -14,7 +16,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class RegisterActivity2 : AppCompatActivity() {
-    var register:Register? = null
+    var register: Register? = null
     var name: String? = null
     var id: String? = null
     var password: String? = null
