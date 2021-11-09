@@ -7,6 +7,7 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -52,6 +53,10 @@ import java.util.Vector;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import static android.speech.tts.TextToSpeech.ERROR;
+
+
+
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
@@ -79,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     ValueHandler vHandler = new ValueHandler();
     arraylistHandler alHandler = new arraylistHandler();
 
+    //tts생성
+    TextToSpeech tts;
+
     static String startLatG, endLatG, startLonG, endLonG;
     static ArrayList<LatLng> addressList;
 
@@ -96,6 +104,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Button = findViewById(R.id.button);
         routbutton=findViewById(R.id.routbutton);
         polylineOverlay = new PolylineOverlay();
+
+        // TTS를 생성하고 OnInitListener로 초기화 한다.
+        tts= new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status!=ERROR){
+                    //언어 선택
+                    tts.setLanguage(Locale.KOREAN);
+                }
+            }
+        }
+        );
+
 
         //지도 사용권한을 받아 온다.
         locationSource =
@@ -153,6 +174,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //LatLng initialPosition = new LatLng(37.506855, 127.066242);
         //CameraUpdate cameraUpdate = CameraUpdate.scrollTo(initialPosition);
         //naverMap.moveCamera(cameraUpdate);
+
+        //음성출력 목소리 설정
+        tts.setPitch(1.0f);
+        tts.setSpeechRate(1.0f);
 
         // 카메라 이동 되면 호출 되는 이벤트
         naverMap.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
@@ -277,6 +302,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
 
+                tts.speak("길찾기를 시작합니다",TextToSpeech.QUEUE_FLUSH,null);
+
+
                 //길찾기버튼을 누르면 확대되면서 tts서비스
                 System.out.print("해치웠나?");
                 LatLng firstLatlng = latLngArrayList.get(0);
@@ -295,6 +323,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // TTS 객체가 남아있다면 실행을 중지하고 메모리에서 제거한다.
+        if(tts != null){
+            tts.stop();
+            tts.shutdown();
+            tts = null;
+        }
+    }
+
+
+
 
 
     // 현재 카메라가 보고있는 위치
