@@ -25,7 +25,7 @@
             android:value="lt2uodre6f"/>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Login.LoginActivity2"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,8 +33,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--<activity android:name=".Register.RegisterActivity2"/>
-        <activity android:name=".MainActivity"/>-->
+        <activity android:name=".Register.RegisterActivity2"/>
+        <activity android:name=".MainActivity"/>
 
     </application>
 
