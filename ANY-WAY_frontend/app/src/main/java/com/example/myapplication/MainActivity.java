@@ -1,12 +1,16 @@
 package com.example.myapplication;
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Entity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,10 +22,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.naver.maps.geometry.LatLng;
@@ -64,7 +70,7 @@ import static android.speech.tts.TextToSpeech.ERROR;
 import static java.lang.Thread.sleep;
 
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity<implement> extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
     //지자기, 가속도 센서를 활용해 위치를 반환하는 구현체
@@ -98,9 +104,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     static String startLatG, endLatG, startLonG, endLonG;
     static ArrayList<LatLng> addressList;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +147,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //getMapAsync를 호출하여 비동기로 onMapReady콜백 메서드 호출
         //onMapReady에서 NaverMap객체를 받음
         mapFragment.getMapAsync(this);
+
+
+
     }
 
     @Override
@@ -188,16 +194,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //tts목소리랑 속도 설정
         tts.setPitch(1.0f);
-        tts.setSpeechRate(1.0f);
+        tts.setSpeechRate(1.3f);
 
-        // 카메라 이동 되면 호출 되는 이벤트
-        naverMap.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
-            @Override
-            public void onCameraChange(int reason, boolean animated) {
-
-
-            }
-        });
 
         //검색을 하면 검색한 좌표에 마커를 찍어준다.
         // 버튼 이벤트
@@ -308,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         });
 
-        //버튼을 누르면 gps작동, 이제 위치이동이벤트가 발생할때 좌표를 받고 tts를 구현하자
+        //버튼을 누르면 gps작동
         routbutton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -339,9 +337,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 );
                 naverMap.setCameraPosition(cameraPosition);
                 naverMap.setLocationTrackingMode(LocationTrackingMode.Face);
-
-
-
+                startLocationService();
             }
         });
 
@@ -357,11 +353,74 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    //현재gps위치를 가져오기위한 LocationManager객체생성
+    public void startLocationService() {
+        LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location != null) {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+
+        }
+
+        //3초가 지나거나 or 2m 움직일때마다 이벤트호출
+        GPSListener gpsListener=new GPSListener(ttsService);
+        long minTime=3000;
+        float minDistance=2;
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,minTime,minDistance,gpsListener);
+        Toast.makeText(getApplicationContext(),"내 위치확인 요청함",Toast.LENGTH_SHORT).show();
+    }
+
+    //gps이동이벤트가 발생하면 로직수행
+    class GPSListener implements LocationListener {
+        Map<LatLng,String> ttsService;
+        List<String> discription=new ArrayList<String>();
+        LatLng ttsLatlng;
+        double distance;
+
+        public GPSListener(Map<LatLng, String> ttsService) {
+            this.ttsService=ttsService;
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            Double latitude=location.getLatitude();
+            Double longitude=location.getLongitude();
 
 
+            for(Map.Entry<LatLng,String> entry:ttsService.entrySet()){
+                ttsLatlng=entry.getKey();
+                distance=getDistance(latitude,longitude,ttsLatlng.latitude,ttsLatlng.longitude);
 
+                //현재위치와 포인트좌표가 20m밖에 있고 한번음성출력이된적이있으면 제외
+                if(distance<20&&!(discription.contains(entry.getValue()))){
+                    tts.speak(entry.getValue(),TextToSpeech.QUEUE_FLUSH,null);
+                    discription.add(entry.getValue());
+                }
+            }
 
+        }
 
+        //현재gps위치와 point위치사이의 거리 리턴, 단위m
+        public double getDistance(double lat1,double lng1,double lat2,double lng2){
+            double distance;
+
+            Location locationA=new Location("point A");
+            locationA.setLatitude(lat1);
+            locationA.setLongitude(lng1);
+
+            Location locationB=new Location("point B");
+            locationB.setLatitude(lat2);
+            locationB.setLongitude(lng2);
+
+            distance=locationA.distanceTo(locationB);
+            return distance;
+        }
+    }
 
     // 현재 카메라가 보고있는 위치
     public LatLng getCurrentPosition(NaverMap naverMap) {
@@ -617,7 +676,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         double latitude = Double.parseDouble(geometry.getJSONArray("coordinates").get(1).toString());
 
                         //포인트마다 description을 넣어 tts서비스
-                        LatLng latLng=new LatLng(longitude,latitude);
+                        LatLng latLng=new LatLng(latitude,longitude);
                         String decription=properties.getString("description");
                         ttsService.put(latLng,decription);
 

@@ -1,0 +1,11 @@
+diff a/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/MainActivity.java b/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/MainActivity.java	(rejected hunks)
+@@ -84,6 +84,9 @@
+     ValueHandler vHandler = new ValueHandler();
+     arraylistHandler alHandler = new arraylistHandler();
+ 
++    //tts생성
++    TextToSpeech tts;
++
+     static String startLatG, endLatG, startLonG, endLonG;
+     static ArrayList<LatLng> addressList;
+ 

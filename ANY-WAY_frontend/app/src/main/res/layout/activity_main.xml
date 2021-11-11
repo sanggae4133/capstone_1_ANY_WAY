@@ -23,7 +23,7 @@
         android:id="@+id/editTextStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:hint="출발지점을 입력하세요"
@@ -41,18 +41,20 @@
         android:layout_marginEnd="20dp"
         android:ems="10"
         android:hint="도착지점을 입력하세요"
-        android:text="chungang university"
+        android:text="chungang "
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintHorizontal_bias="0.511"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map" />
 
+    <!--대충만든 버튼-->
+
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="19dp"
+        android:layout_marginEnd="35dp"
         android:layout_marginBottom="25dp"
         android:text="Button"
         app:layout_constraintBottom_toTopOf="@+id/totalDistance"
@@ -60,36 +62,36 @@
         app:layout_constraintStart_toEndOf="@+id/editTextStart"
         app:layout_constraintTop_toBottomOf="@+id/map" />
 
-    <!--대충만든 버튼-->
-
     <Button
         android:id="@+id/routbutton"
-        android:layout_width="80dp"
-        android:layout_height="54dp"
-        android:layout_marginTop="84dp"
-        android:layout_marginEnd="12dp"
+        android:layout_width="78dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="132dp"
+        android:layout_marginEnd="4dp"
         android:text="길찾기"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/map" />
 
     <TextView
         android:id="@+id/totalDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="272dp"
+        android:layout_width="109dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="244dp"
         android:layout_marginBottom="6dp"
         android:text="총거리"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/totalTime"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <TextView
         android:id="@+id/totalTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="272dp"
+        android:layout_width="109dp"
+        android:layout_height="26dp"
+        android:layout_marginStart="244dp"
         android:layout_marginBottom="33dp"
         android:text="총시간"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
