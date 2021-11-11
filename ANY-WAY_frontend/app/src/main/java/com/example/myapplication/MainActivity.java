@@ -1,9 +1,13 @@
 package com.example.myapplication;
 import android.Manifest;
 import android.content.ContentValues;
+import android.content.Entity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.naver.maps.geometry.LatLng;
@@ -46,16 +51,17 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Vector;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import static android.speech.tts.TextToSpeech.ERROR;
-
-
+import static java.lang.Thread.sleep;
 
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -87,8 +93,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //tts생성
     TextToSpeech tts;
 
+    //포인트랑 tts출력을 위한 description을 담은 hashmap
+    Map<LatLng,String> ttsService=new HashMap<>();
+
     static String startLatG, endLatG, startLonG, endLonG;
     static ArrayList<LatLng> addressList;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,17 +117,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         routbutton=findViewById(R.id.routbutton);
         polylineOverlay = new PolylineOverlay();
 
-        // TTS를 생성하고 OnInitListener로 초기화 한다.
-        tts= new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+        //tts를 생성하고 OnInitListener로 초기화
+        tts=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
                 if(status!=ERROR){
-                    //언어 선택
+                    //언어선택
                     tts.setLanguage(Locale.KOREAN);
                 }
             }
-        }
-        );
+        });
 
 
         //지도 사용권한을 받아 온다.
@@ -175,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //CameraUpdate cameraUpdate = CameraUpdate.scrollTo(initialPosition);
         //naverMap.moveCamera(cameraUpdate);
 
-        //음성출력 목소리 설정
+        //tts목소리랑 속도 설정
         tts.setPitch(1.0f);
         tts.setSpeechRate(1.0f);
 
@@ -302,7 +313,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
 
-                tts.speak("길찾기를 시작합니다",TextToSpeech.QUEUE_FLUSH,null);
+                tts.speak("길찾기를 시작합니다.", TextToSpeech.QUEUE_FLUSH,null);
+
+                //"길찾기를 시작합니다" 출력 후 1초 쉬고 찐tts서비스 시작
+                try
+                {
+                    sleep(1000);
+                } catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
 
 
                 //길찾기버튼을 누르면 확대되면서 tts서비스
@@ -313,12 +333,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 System.out.println(firstLatlng.latitude);
                 CameraPosition cameraPosition = new CameraPosition(
                         new LatLng(latitute,longtitute),   // 위치 지정
-                        18,                           // 줌 레벨
+                        18,                          // 줌 레벨
                         45,                          // 기울임 각도
                         45                           // 방향
                 );
                 naverMap.setCameraPosition(cameraPosition);
                 naverMap.setLocationTrackingMode(LocationTrackingMode.Face);
+
+
+
             }
         });
 
@@ -333,6 +356,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             tts = null;
         }
     }
+
+
 
 
 
@@ -590,20 +615,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         double longitude = Double.parseDouble(geometry.getJSONArray("coordinates").get(0).toString());
                         double latitude = Double.parseDouble(geometry.getJSONArray("coordinates").get(1).toString());
+
+                        //포인트마다 description을 넣어 tts서비스
+                        LatLng latLng=new LatLng(longitude,latitude);
+                        String decription=properties.getString("description");
+                        ttsService.put(latLng,decription);
+
 //                        System.out.println("Point를 저장 ");
 //                        latLngArrayList.add(new LatLng(latitude, longitude));
 
-                        if (pointType.equals("SP")) {
-                            System.out.println("시작지점이다");
+//                        if (pointType.equals("SP")) {
+//                            System.out.println("시작지점이다");
 
-                        } else if (pointType.equals("GP")) {
+//                        } else if (pointType.equals("GP")) {
 
-                            System.out.println("중간지점이다");
-                        } else if (pointType.equals("EP")) {
+//                            System.out.println("중간지점이다");
+//                        } else if (pointType.equals("EP")) {
 
-                            System.out.println("끝지점이다");
+//                            System.out.println("끝지점이다");
 
-                        }
+//                        }
 //                        marker.setPosition(new LatLng(latitude, longitude));
 //                        System.out.println(latitude+","+longitude);
 //                        marker.setMap(naverMap);
@@ -614,6 +645,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //alHandler.sendMessage(message);
 
                 }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
