@@ -8,66 +8,81 @@
 
 
     <!-- 네이버 지도 -->
+
+    <Button
+        android:id="@+id/routbutton"
+        android:layout_width="82dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="37dp"
+        android:layout_marginBottom="60dp"
+        android:text="TTS"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.945"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button" />
+
     <fragment
         android:id="@+id/map"
         android:name="com.naver.maps.map.MapFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="14dp"
-        app:layout_constraintBottom_toTopOf="@+id/button"
+        android:layout_width="410dp"
+        android:layout_height="447dp"
+        app:layout_constraintBottom_toTopOf="@+id/editTextStart"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <EditText
         android:id="@+id/editTextStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="178dp"
+        android:layout_height="43dp"
         android:ems="10"
         android:hint="출발지점을 입력하세요"
         android:inputType="textPersonName"
         android:text="sangdo station"
-        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintBottom_toTopOf="@+id/editTextEnd"
+        app:layout_constraintEnd_toStartOf="@+id/getCurPosition"
+        app:layout_constraintHorizontal_bias="0.225"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.927" />
 
     <EditText
         android:id="@+id/editTextEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="92dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="178dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="28dp"
         android:ems="10"
         android:hint="도착지점을 입력하세요"
         android:inputType="textPersonName"
-        android:text="dongjak station"
-        app:layout_constraintEnd_toStartOf="@+id/button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map" />
+        android:text="chungang university"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/getCurPosition"
+        app:layout_constraintHorizontal_bias="0.225"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="19dp"
-        android:layout_marginBottom="31dp"
-        android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/totalDistance"
+        android:layout_width="82dp"
+        android:layout_height="38dp"
+        android:text="길찾기"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/editTextStart"
-        app:layout_constraintTop_toBottomOf="@+id/map" />
+        app:layout_constraintHorizontal_bias="0.945"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.805" />
 
     <TextView
         android:id="@+id/totalTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="300dp"
-        android:layout_marginBottom="43dp"
+        android:layout_marginStart="236dp"
+        android:layout_marginRight="120dp"
         android:text="총시간"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/totalDistance" />
@@ -76,11 +91,24 @@
         android:id="@+id/totalDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="300dp"
-        android:layout_marginBottom="26dp"
         android:text="총거리"
-        app:layout_constraintBottom_toTopOf="@+id/totalTime"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.637"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/button"
+        app:layout_constraintVertical_bias="0.234" />
+
+    <Button
+        android:id="@+id/getCurPosition"
+        android:layout_width="84dp"
+        android:layout_height="37dp"
+        android:text="현위치"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.706" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
