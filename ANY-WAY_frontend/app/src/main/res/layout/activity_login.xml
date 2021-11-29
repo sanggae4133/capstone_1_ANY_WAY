@@ -41,10 +41,11 @@
         app:layout_constraintStart_toStartOf="@+id/login_email" />
 
     <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="55dp"
+        android:id="@+id/logoImageView"
+        android:layout_width="61dp"
         android:layout_height="55dp"
         android:layout_marginBottom="41dp"
+        android:src="@drawable/logoImage"
         app:layout_constraintBottom_toTopOf="@+id/login_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
