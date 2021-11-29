@@ -4,7 +4,8 @@ plugins {
     id 'kotlin-android-extensions'
 }
 
-
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
 
 android {
     compileSdk 31
@@ -18,6 +19,17 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "GOOGLE_API_KEY", properties['google_api_key']
+        buildConfigField "String", "TMAP_API_KEY", properties['tmap_api_key']
+        buildConfigField "String", "NAVER_MAP_API_KEY", properties['naver_map_api_key']
+        // 프로젝트 내에서 언제든지 사용이 가능한 변수들이다.
+        // 타입 - 키 - 값으로 저장된다.
+
+        //manifestPlaceholders = [NAVERMAP_API_KEY: properties['naver_map_api_key']]
+        // 매니페스트에서 사용이 가능하다. 구글맵 같은 경우가 이에 해당한다.
+        // 키 - 값으로 저장된다.
+
     }
 
     buildTypes {
