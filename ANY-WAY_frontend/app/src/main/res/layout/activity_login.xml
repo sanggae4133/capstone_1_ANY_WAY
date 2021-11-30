@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".Login.LoginActivity2">
 
     <Button
         android:id="@+id/login_button"
@@ -40,17 +40,19 @@
         app:layout_constraintBottom_toTopOf="@+id/login_button"
         app:layout_constraintStart_toStartOf="@+id/login_email" />
 
+
     <ImageView
         android:id="@+id/logoImageView"
         android:layout_width="61dp"
         android:layout_height="55dp"
         android:layout_marginBottom="41dp"
-        android:src="@drawable/logoImage"
+        android:src="@drawable/logoimage"
         app:layout_constraintBottom_toTopOf="@+id/login_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
         app:tint="@color/colorAccent" />
-
 
     <Button
         android:id="@+id/register_button"
