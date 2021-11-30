@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -12,15 +14,20 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
@@ -52,17 +59,16 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.PriorityQueue;
 import java.util.Vector;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
@@ -84,27 +90,56 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     TextView totalTimeText;
     EditText editTextStart;
     EditText editTextEnd;
-    Button Button, getCurPosition, routbutton, changeBtn,bestWayBtn,sortByTimeBtn, sortByDistBtn;
+    Button Button, getCurPosition, bestWayBtn, sortByTimeBtn, sortByDistBtn, searchBarBtn, slideBtn;
+    ImageButton searchBtn, routbutton, changeBtn;
     getAltitude getAltitudes;
     getCoordinate getCoordinates;
     Handler handler = new Handler();
     Context context;
-
+    ConstraintLayout resultBar;
+    Animation translate_up, translate_down, translate_up2, translate_down2;
 
     static String startLatG, endLatG, startLonG, endLonG;
     static ArrayList<LatLng> addressList;
     static Double Elevation, curLatG, curLonG, troubleLat, troubleLon;
     static boolean getInTrouble, isCurP;
     static ArrayList<Loute> possibleLoute;
-    static double totalDistanceG, curLat,curLon,lonGap, latGap;
+    static double totalDistanceG, curLat, curLon, lonGap, latGap;
     static int totalTimeG, latOp, lonOp;
-
+    static boolean isPageOpen;
     private LocationManager locationManager;
     private static final int REQUEST_CODE_LOCATION = 2;
+
+    public class SlidingAnimationListener implements Animation.AnimationListener {
+        @Override
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            if (isPageOpen) {
+                resultBar.setVisibility(View.INVISIBLE);
+                slideBtn.setText("open");
+                isPageOpen = false;
+            } else {
+                slideBtn.setText("close");
+                isPageOpen = true;
+            }
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_main);
 
         markerStart = new Marker();
@@ -113,18 +148,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         totalTimeText = findViewById(R.id.totalTime);
         editTextStart = findViewById(R.id.editTextStart);
         editTextEnd = findViewById(R.id.editTextEnd);
-        Button = findViewById(R.id.button);
-        changeBtn = findViewById(R.id.changeBTN);
+        searchBtn = findViewById(R.id.searchBtn);
+        changeBtn = findViewById(R.id.changeBtn);
         routbutton = findViewById(R.id.routbutton);
         bestWayBtn = findViewById(R.id.bestWay);
         sortByDistBtn = findViewById(R.id.sortByDist);
+        //searchBarBtn = findViewById(R.id.searchBar);
+        searchBtn = findViewById(R.id.searchBtn);
+        resultBar = findViewById(R.id.resultBar);
+        translate_up = AnimationUtils.loadAnimation(this, R.anim.translate_up);
+        translate_down = AnimationUtils.loadAnimation(this, R.anim.translate_down);
+        translate_up2 = AnimationUtils.loadAnimation(this, R.anim.translate_up2);
+        translate_down2 = AnimationUtils.loadAnimation(this, R.anim.translate_down2);
+        slideBtn = findViewById(R.id.slideBtn);
 
         getCurPosition = findViewById(R.id.getCurPosition);
         polylineOverlay = new PolylineOverlay();
         bannedOverlay = new PolylineOverlay();
         bannedOverlays = new MultipartPathOverlay();
         context = getApplicationContext();
-
+        isPageOpen = true;
         isCurP = false;
         //지도 사용권한을 받아 온다.
         locationSource =
@@ -141,6 +184,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //getMapAsync를 호출하여 비동기로 onMapReady콜백 메서드 호출
         //onMapReady에서 NaverMap객체를 받음
         mapFragment.getMapAsync(this);
+
+        editTextStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTextStart.setText("");
+            }
+        });
+        editTextEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTextEnd.setText("");
+            }
+        });
+
     }
 
     @Override
@@ -166,6 +223,54 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 requestCode, permissions, grantResults);
     }
 
+    public void createSelection(double lat, double lon) {
+        String target = "";
+        List<Address> list = null;
+        try {
+
+            list = geocoder.getFromLocation(
+                    lat, // 위도
+                    lon, // 경도
+                    10); // 얻어올 값의 개수
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.e("test", "입출력 오류 - 서버에서 주소변환시 에러발생");
+        }
+        if (list != null) {
+            if (list.size() == 0) {
+                System.out.println("해당되는 주소 정보는 없습니다");
+            } else {
+                target = list.get(0).getAddressLine(0);
+            }
+        }
+
+        String finalTarget = target;
+        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("출발지 or 목적지 설정")
+                .setMessage(target)
+                .setPositiveButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .setNegativeButton("목적지", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(MainActivity.this, lat + " " + lon, Toast.LENGTH_SHORT).show();
+                        editTextEnd.setText(finalTarget);
+                    }
+                })
+                .setNeutralButton("출발지", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(MainActivity.this, lat + " " + lon, Toast.LENGTH_SHORT).show();
+                        editTextStart.setText(finalTarget);
+                    }
+                });
+        msgBuilder.create().show();
+    }
+
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         this.naverMap = naverMap;
@@ -180,6 +285,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         CameraUpdate cameraUpdate = CameraUpdate.scrollTo(initialPosition);
         naverMap.moveCamera(cameraUpdate);
 
+        //슬라이딩 관련
+        SlidingAnimationListener listener = new SlidingAnimationListener();
+        translate_up.setAnimationListener(listener);
+        translate_down.setAnimationListener(listener);
+
 
         // 카메라 이동 되면 호출 되는 이벤트
         naverMap.addOnCameraChangeListener(new NaverMap.OnCameraChangeListener() {
@@ -190,9 +300,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        //지도에서 클릭이벤트 발생시 클릭한 곳 좌표 정보얻고 createSelection 메소드 호출
+        //createSelection 메소드는 해당 좌표 => 주소 변환 후 출발지 or 목적지로 설정할 수 있는 기능
+        naverMap.setOnMapClickListener(
+                (point, coord) -> createSelection(coord.latitude, coord.longitude)
+        );
+
+        slideBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isPageOpen) {
+                    resultBar.startAnimation(translate_up);
+                    slideBtn.startAnimation(translate_up);
+                    slideBtn.setY(1700);
+                } else {
+                    resultBar.setVisibility(View.VISIBLE);
+                    resultBar.startAnimation(translate_down);
+                    slideBtn.startAnimation(translate_down);
+                    slideBtn.setY(1300);
+                }
+            }
+        });
+
         //검색을 하면 검색한 좌표에 마커를 찍어준다.
         // 버튼 이벤트
-        Button.setOnClickListener(new Button.OnClickListener() {
+        searchBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -236,8 +368,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 System.out.println(startLatG + " " + startLonG + " " + endLatG + " " + endLonG);
 
                 //좌표들의 유효성 체크
-                if (startLatG == null || startLonG == null || endLatG == null || endLonG == null||
-                startLatG.equals("true") || startLonG.equals("true") || endLatG.equals("true") || endLonG.equals("true")) {
+                if (startLatG == null || startLonG == null || endLatG == null || endLonG == null ||
+                        startLatG.equals("true") || startLonG.equals("true") || endLatG.equals("true") || endLonG.equals("true")) {
                     System.out.println("검색 실패 예외처리");
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("에러").setMessage("주소 검색 실패");
@@ -264,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         lonOp = 1;
                         latOp = 1;
                     } else {
-                        System.out.println("양수"+(curLonG - nextLon)+" "+(curLatG - nextLat));
+                        System.out.println("양수" + (curLonG - nextLon) + " " + (curLatG - nextLat));
                         latOp = 1;
                         lonOp = -1;
                     }
@@ -299,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         e.printStackTrace();
                     }
 
-                    if(getInTrouble){
+                    if (getInTrouble) {
                         loop:
                         for (int i = 1; i <= 3; i++) {
                             for (int j = -1; j < 2; j += 2) {
@@ -338,14 +470,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
-//                                    MultipartPathOverlay multipartPathOverlay = new MultipartPathOverlay();
-//                                    multipartPathOverlay.setCoordParts(Arrays.asList(latLngArrayList, impossibleRoad));
-//                                    multipartPathOverlay.setColorParts(Arrays.asList(new MultipartPathOverlay.ColorPart(Color.YELLOW, Color.YELLOW, Color.YELLOW, Color.YELLOW),
-//                                            new MultipartPathOverlay.ColorPart(Color.RED, Color.RED, Color.RED, Color.RED)));
-//                                    multipartPathOverlay.setMap(naverMap);
-                                }
+
                             }
                         }
+                    }
 
                     if (possibleLoute.size() > 0) {
                         //못가는 길의 길이가 적은 순으로 정렬
@@ -353,8 +481,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         System.out.println("갈수있는 경로 좌표 사이즈 : " + possibleLoute.get(0).Nodes.size());
                         System.out.println("경사도 초과 좌표 사이즈 : " + impossibleRoads.get(0).size());
-                        System.out.println("시간 : " +  possibleLoute.get(0).time);
-                        System.out.println("총거리 : " +  possibleLoute.get(0).totalDistance);
+                        System.out.println("시간 : " + possibleLoute.get(0).time);
+                        System.out.println("총거리 : " + possibleLoute.get(0).totalDistance);
                         System.out.println(possibleLoute.get(0).impossibleDist);
 
                         polylineOverlay.setCoords(possibleLoute.get(0).Nodes);
@@ -374,6 +502,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         // 시간에 1.5 배 곱하는 이유는 장애인의 평균적인 보행속도가 일반적인 경우에 비해 65% 정도라고 하기에
                         totalDistanceText.setText("총 거리 :" + possibleLoute.get(0).totalDistance / 1000 + " km");
+                        totalDistanceText.setX(700);
                         totalTimeText.setText("총 거리 :" + (possibleLoute.get(0).time * 1.5) / 60 + "분");
                         // 영역이 온전히 보이는 좌표와 최대 줌 레벨로 카메라의 위치를 변경합니다.
                         // 경로의 첫번째포인트,마지막포인트를 지도에 꽉차게 보여줌
@@ -382,7 +511,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         LatLngBounds latLngBounds = new LatLngBounds(firstLatlng, lastLatlng);
                         CameraUpdate cameraUpdate = CameraUpdate.fitBounds(latLngBounds);
                         naverMap.moveCamera(cameraUpdate);
-                    }else{
+                    } else {
                         System.out.println("좌표 => 주소 변환 문제");
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                         builder.setTitle("에러").setMessage("좌표=> 주소 변환에서 문제 발생");
@@ -390,7 +519,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         alertDialog.show();
                     }
 
-                    }
+                }
             }
         });
 
@@ -402,7 +531,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 polylineOverlay.setMap(null);
                 bannedOverlays.setMap(null);
 
-                if (possibleLoute.size() > 0) {
+                if (possibleLoute != null && possibleLoute.size() > 0) {
+
+
                     Collections.sort(possibleLoute, new Comparator<Loute>() {
                         @Override
                         public int compare(Loute o1, Loute o2) {
@@ -412,8 +543,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     System.out.println("갈수있는 경로 좌표 사이즈 : " + possibleLoute.get(0).Nodes.size());
                     System.out.println("경사도 초과 좌표 사이즈 : " + impossibleRoads.get(0).size());
-                    System.out.println("시간 : " +  possibleLoute.get(0).time);
-                    System.out.println("총거리 : " +  possibleLoute.get(0).totalDistance);
+                    System.out.println("시간 : " + possibleLoute.get(0).time);
+                    System.out.println("총거리 : " + possibleLoute.get(0).totalDistance);
                     System.out.println(possibleLoute.get(0).impossibleDist);
                     //갈 수 없는 길이 포함된 경우
                     //갈 수 없는 길은 빨간색 갈 수 있는 길은 노란색으로 칠함
@@ -445,12 +576,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 polylineOverlay.setMap(null);
                 bannedOverlays.setMap(null);
 
-                if (possibleLoute.size() > 0) {
+                if (possibleLoute != null && possibleLoute.size() > 0) {
                     Collections.sort(possibleLoute);
                     System.out.println("갈수있는 경로 좌표 사이즈 : " + possibleLoute.get(0).Nodes.size());
                     System.out.println("경사도 초과 좌표 사이즈 : " + impossibleRoads.get(0).size());
-                    System.out.println("시간 : " +  possibleLoute.get(0).time);
-                    System.out.println("총거리 : " +  possibleLoute.get(0).totalDistance);
+                    System.out.println("시간 : " + possibleLoute.get(0).time);
+                    System.out.println("총거리 : " + possibleLoute.get(0).totalDistance);
                     System.out.println(possibleLoute.get(0).impossibleDist);
 
                     polylineOverlay.setCoords(possibleLoute.get(0).Nodes);
@@ -500,19 +631,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View v) {
                 //사용자의 위치 수신을 위한 세팅
-                locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 //사용자의 현재 위치
                 Location userLocation = getMyLocation();
-                if( userLocation != null ) {
+                if (userLocation != null) {
                     double latitude = userLocation.getLatitude();
                     double longitude = userLocation.getLongitude();
 
-                    System.out.println("////////////현재 내 위치값 : "+latitude+","+longitude);
+                    System.out.println("////////////현재 내 위치값 : " + latitude + "," + longitude);
 
                     editTextStart.setText("현위치");
                     curLat = latitude;
                     curLon = longitude;
-                }else{
+                } else {
                     System.out.println("에러 : getMyLocation 에서 받아온 정보가 null");
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                     builder.setTitle("에러").setMessage("현위치 정보 못 가져옴");
@@ -530,12 +661,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 //길찾기버튼을 누르면 확대되면서 tts서비스
                 System.out.print("해치웠나?");
-                LatLng firstLatlng = latLngArrayList.get(0);
-                double latitute=firstLatlng.latitude;
-                double longtitute=firstLatlng.longitude;
+                LatLng firstLatlng = possibleLoute.get(0).Nodes.get(0);
+                double latitute = firstLatlng.latitude;
+                double longtitute = firstLatlng.longitude;
                 System.out.println(firstLatlng.latitude);
                 CameraPosition cameraPosition = new CameraPosition(
-                        new LatLng(latitute,longtitute),   // 위치 지정
+                        new LatLng(latitute, longtitute),   // 위치 지정
                         18,                           // 줌 레벨
                         45,                          // 기울임 각도
                         45                           // 방향
@@ -544,7 +675,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 naverMap.setLocationTrackingMode(LocationTrackingMode.Face);
             }
         });
-
 
     }
 
@@ -555,8 +685,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             System.out.println("////////////사용자에게 권한을 요청해야함");
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, this.REQUEST_CODE_LOCATION);
             getMyLocation(); //이건 써도되고 안써도 되지만, 전 권한 승인하면 즉시 위치값 받아오려고 썼습니다!
-        }
-        else {
+        } else {
             System.out.println("////////////권한요청 안해도됨");
 
             // 수동으로 위치 구하기
@@ -571,22 +700,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         return currentLocation;
     }
-
-
-    //검색완료 후 키보드 내리기
-//                InputMethodManager manager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-//                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-
-    // 해당 좌표로 화면 줌
-//                    naverMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
-
-                /*
-                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(Startpoint);
-                    naverMap.moveCamera(cameraUpdate);
-
-                 */
-
 
     // 현재 카메라가 보고있는 위치
     public LatLng getCurrentPosition(NaverMap naverMap) {
@@ -713,6 +826,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             return sb.toString();
         }
+
         // url 으로 json 받아오는 메소드
         public JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
             InputStream is = new URL(url).openStream();
@@ -725,6 +839,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 is.close();
             }
         }
+
         // response 에서 json 받아오기 위한 url 만 추출
         public String parsingResponse(String Response) {
 
@@ -762,7 +877,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             ArrayList<String> Lats = new ArrayList<>();
             ArrayList<String> Lons = new ArrayList<>();
             ArrayList<Double> Dist = new ArrayList<>();
-            ArrayList<LatLng> impossibleRoad = null; 
+            ArrayList<LatLng> impossibleRoad = null;
             ArrayList<LatLng> possibleRoad = new ArrayList<>();
             List<List<LatLng>> impossibleLoute = new ArrayList<>();
             // 해당 URL로 부터 결과물을 얻어온다.
@@ -873,7 +988,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //위도 경도 좌표들 받아 elevation api 로 고도 따오고 계산하며 경사도가 문제되는 부분, 갈 수 있는 길을 반환
         public ArrayList<Double> callElevationApi(ArrayList<String> lat, ArrayList<String> lon) {
-            String url = "https://maps.googleapis.com/maps/api/elevation/json?locations="+lat.get(0) + "%2C" + lon.get(0);
+            String url = "https://maps.googleapis.com/maps/api/elevation/json?locations=" + lat.get(0) + "%2C" + lon.get(0);
             for (int i = 1; i < lat.size(); i++) {
                 url += "%7C" + lat.get(i) + "%2C" + lon.get(i);
             }
@@ -946,6 +1061,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             return sb.toString();
         }
+
         // url 으로 json 받아오는 메소드
         public JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
             InputStream is = new URL(url).openStream();
@@ -958,6 +1074,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 is.close();
             }
         }
+
         // response 에서 json 받아오기 위한 url 만 추출
         public String parsingResponse(String Response) {
 
@@ -968,7 +1085,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             return url;
         }
     }
-
 
     class getLouteThread extends Thread {
         String url;
@@ -1174,6 +1290,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 System.out.println("오류 : 검색결과 없음");
             }
         }
+
         public String getlatitude(String input) {
             // 콤마를 기준으로 split
             String[] splitStr = input.toString().split(",");
@@ -1229,6 +1346,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             System.out.println("lat = " + lat + " lon = " + lon + " elevation = " + elevation);
         }
+
         private String readAll(Reader rd) throws IOException {
             StringBuilder sb = new StringBuilder();
             int cp;
@@ -1237,6 +1355,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             return sb.toString();
         }
+
         // url 으로 json 받아오는 메소드
         public JSONObject readJsonFromUrl(String url) throws IOException, JSONException {
             InputStream is = new URL(url).openStream();
@@ -1249,6 +1368,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 is.close();
             }
         }
+
         // response 에서 json 받아오기 위한 url 만 추출
         public String parsingResponse(String Response) {
 
@@ -1259,7 +1379,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             return url;
         }
     }
-
 
 
 }
