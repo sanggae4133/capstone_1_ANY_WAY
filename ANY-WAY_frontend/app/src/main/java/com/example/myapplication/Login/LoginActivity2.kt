@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import com.example.myapplication.MainActivity
 import com.example.myapplication.R
@@ -22,8 +21,6 @@ class LoginActivity2 : AppCompatActivity() {
     var login: Login? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        getWindow().setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //setContentView(R.layout.activity_main)
         setContentView(R.layout.activity_login)
         //setContentView(R.layout.activity_join)
@@ -58,10 +55,10 @@ class LoginActivity2 : AppCompatActivity() {
                     login = response.body()
                     Log.d("LOGIN","msg : "+login?.msg)
                     Log.d("LOGIN","code : "+login?.code)
-//                    var dialog = AlertDialog.Builder(this@LoginActivity2)
-//                    dialog.setTitle(login?.msg)
-//                    dialog.setMessage(login?.code)
-//                    dialog.show()
+                    var dialog = AlertDialog.Builder(this@LoginActivity2)
+                    dialog.setTitle(login?.msg)
+                    dialog.setMessage(login?.code)
+                    dialog.show()
                     if(login?.code =="0000"){
                         startActivity(intent)
                     }
@@ -69,10 +66,10 @@ class LoginActivity2 : AppCompatActivity() {
 
             })
 
-//            var dialog = AlertDialog.Builder(this@LoginActivity2)
-//            dialog.setTitle("알람")
-//            dialog.setMessage("id : " + text1+"pw : " + text2)
-//            dialog.show()
+            var dialog = AlertDialog.Builder(this@LoginActivity2)
+            dialog.setTitle("알람")
+            dialog.setMessage("id : " + text1+"pw : " + text2)
+            dialog.show()
         }
 
         // 회원가입 버튼 눌렀을 때 회원가입 창 띄우기
