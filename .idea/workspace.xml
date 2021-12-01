@@ -4,61 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="616f03f8-5961-4d4e-b498-32d07ee3e3a4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/deploymentTargetDropDown.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/deploymentTargetDropDown.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/gradle.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/proguard-rules.pro" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/proguard-rules.pro" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/androidTest/java/com/example/myapplication/ExampleInstrumentedTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/androidTest/java/com/example/myapplication/ExampleInstrumentedTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/AddressPasing.java" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/AddressPasing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/ApplicationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/ApplicationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/GetLoute.java" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/GetLoute.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/GpsTracker.java" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/GpsTracker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/Login/LoginActivity2.kt" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/Login/LoginActivity2.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/Register/RegisterActivity2.kt" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/Register/RegisterActivity2.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/RequestHttpURLConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/RequestHttpURLConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/SearchActivity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/retrofitSetting.kt" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/java/com/example/myapplication/retrofitSetting.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/anim/translate_down.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/anim/translate_down2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/anim/translate_up.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/anim/translate_up2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/drawable-v24/logoImage.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/drawable/ic_launcher_background.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/drawable/ic_launcher_background.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/drawable/ic_mic.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/drawable/ic_switch.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/drawable/mic.jpeg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/drawable/search.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/layout/activity_join.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/layout/activity_join.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/layout/activity_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/layout/activity_login.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/layout/activity_main.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/layout/activity_search.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/values-night/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/values-night/styles.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/values-night/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/values-night/themes.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/values/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/main/res/values/themes.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/test/java/com/example/myapplication/ExampleUnitTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/app/src/test/java/com/example/myapplication/ExampleUnitTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/gradle.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/gradlew" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/gradlew.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ANY-WAY_frontend/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/ANY-WAY_frontend/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/anyway_backend/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/anyway_backend/.idea/misc.xml" afterDir="false" />
-    </list>
+    <list default="true" id="616f03f8-5961-4d4e-b498-32d07ee3e3a4" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -99,6 +45,5 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>

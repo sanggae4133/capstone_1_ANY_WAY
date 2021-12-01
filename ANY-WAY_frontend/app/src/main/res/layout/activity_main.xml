@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -9,118 +12,189 @@
 
     <!-- 네이버 지도 -->
 
-    <Button
-        android:id="@+id/routbutton"
-        android:layout_width="82dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="37dp"
-        android:layout_marginBottom="60dp"
-        android:text="TTS"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
-
     <fragment
         android:id="@+id/map"
         android:name="com.naver.maps.map.MapFragment"
-        android:layout_width="410dp"
-        android:layout_height="447dp"
-        app:layout_constraintBottom_toTopOf="@+id/editTextStart"
+        android:layout_width="413dp"
+        android:layout_height="733dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="1.0" />
 
     <EditText
         android:id="@+id/editTextStart"
         android:layout_width="178dp"
         android:layout_height="43dp"
+        android:background="#CFCDCD"
+        android:backgroundTint="#CFCDCD"
         android:ems="10"
         android:hint="출발지점을 입력하세요"
         android:inputType="textPersonName"
-        android:text="sangdo station"
-        app:layout_constraintBottom_toTopOf="@+id/editTextEnd"
-        app:layout_constraintEnd_toStartOf="@+id/getCurPosition"
-        app:layout_constraintHorizontal_bias="0.225"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.326"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.927" />
+        app:layout_constraintVertical_bias="0.04" />
 
     <EditText
         android:id="@+id/editTextEnd"
         android:layout_width="178dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="28dp"
+        android:layout_height="43dp"
+        android:background="#CFCDCD"
         android:ems="10"
         android:hint="도착지점을 입력하세요"
         android:inputType="textPersonName"
-        android:text="chungang university"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/getCurPosition"
-        app:layout_constraintHorizontal_bias="0.225"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="82dp"
-        android:layout_height="38dp"
-        android:text="길찾기"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.945"
+        app:layout_constraintHorizontal_bias="0.326"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.805" />
+        app:layout_constraintVertical_bias="0.119" />
 
-    <TextView
-        android:id="@+id/totalTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="236dp"
-        android:layout_marginRight="120dp"
-        android:text="총시간"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/totalDistance" />
-
-    <TextView
-        android:id="@+id/totalDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="총거리"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.637"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button"
-        app:layout_constraintVertical_bias="0.234" />
 
     <Button
         android:id="@+id/getCurPosition"
-        android:layout_width="84dp"
-        android:layout_height="37dp"
+        android:layout_width="62dp"
+        android:layout_height="46dp"
         android:text="현위치"
+        android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.951"
+        app:layout_constraintHorizontal_bias="0.773"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.706" />
+        app:layout_constraintVertical_bias="0.036" />
+
+    <ImageButton
+        android:id="@+id/changeBtn"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
+        android:backgroundTint="#FFAD33"
+        android:padding="0sp"
+        android:scaleType="centerCrop"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.752"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.119"
+        app:srcCompat="@drawable/ic_switch" />
+
+    <ImageButton
+        android:id="@+id/routbutton"
+        android:layout_width="46dp"
+        android:layout_height="43dp"
+        android:background="#B5B4B4"
+
+        android:backgroundTint="#FFAD33"
+        android:padding="0sp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.875"
+        app:layout_constraintStart_toEndOf="@+id/editTextStart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.036"
+        app:srcCompat="@drawable/ic_mic" />
+
+    <ImageButton
+        android:id="@+id/searchBtn"
+        android:layout_width="52dp"
+        android:layout_height="50dp"
+        android:backgroundTint="#FFAD33"
+        android:padding="0sp"
+        android:scaleType="centerCrop"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.868"
+        app:layout_constraintStart_toEndOf="@+id/editTextEnd"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.12"
+        app:srcCompat="@drawable/search" />
 
     <Button
-        android:id="@+id/changeBTN"
+        android:id="@+id/slideBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="change"
+        android:text="Close"
+        app:layout_constraintBottom_toTopOf="@+id/resultBar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/map"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/resultBar"
+        android:layout_width="411dp"
+        android:layout_height="150dp"
+        android:background="#80EFD178"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.949"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.566" />
+        app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+            android:id="@+id/totalTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="220dp"
+            android:layout_marginRight="120dp"
+            android:text="총시간"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.796" />
+
+        <TextView
+            android:id="@+id/totalDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="총거리"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.619"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.227" />
+
+        <Button
+            android:id="@+id/sortByDist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="최단거리"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.232"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.843" />
+
+        <Button
+            android:id="@+id/bestWay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="최적경로"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.232"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.274" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

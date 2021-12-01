@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AlertDialog
 import com.example.myapplication.R
 import com.example.myapplication.retrofitSetting
@@ -33,6 +34,9 @@ class RegisterActivity2 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         //setContentView(R.layout.activity_main)
         //setContentView(R.layout.activity_login)
         setContentView(R.layout.activity_join)
