@@ -46,8 +46,12 @@
         android:layout_width="122dp"
         android:layout_height="113dp"
         android:layout_marginBottom="41dp"
+<<<<<<< HEAD
         android:foreground="@drawable/logoimage"
         android:src="@drawable/logoimage"
+=======
+        android:src="@drawable/logo_image"
+>>>>>>> eb313159de1258381f62fd1c1566aef02400f72e
         app:layout_constraintBottom_toTopOf="@+id/login_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
