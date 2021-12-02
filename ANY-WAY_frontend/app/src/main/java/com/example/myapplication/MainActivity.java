@@ -95,8 +95,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     Marker markerStart, markerEnd, curMarker;
     TextView totalDistanceText;
     TextView totalTimeText;
-    EditText editTextStart;
-    EditText editTextEnd;
+
+    public static EditText editTextStart, editTextEnd;
+
     Button Button, getCurPosition, bestWayBtn, settingBtn, sortByDistBtn, searchBarBtn, slideBtn;
     ImageButton searchBtn, routbutton, changeBtn;
     getAltitude getAltitudes;
@@ -120,11 +121,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LocationManager locationManager;
     private static final int REQUEST_CODE_LOCATION = 2;
     TextToSpeech tts;
-    Map<LatLng,String> ttsService=new HashMap<>();
+    Map<LatLng, String> ttsService = new HashMap<>();
 
-    public static ArrayList<String> favorList;
-    ListView favorListView;
-    ArrayAdapter favorAdapter;
+    public static ArrayList<String> favorList, logList;
+    ListView favorListView, logListView ;
+    ArrayAdapter favorAdapter, logAdapter;
 
     public class SlidingAnimationListener implements Animation.AnimationListener {
         @Override
@@ -191,21 +192,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
 
-
-
         //******************수정 필요**************************************
         //검색 옵션 조절 원래는 db 연결을 통해 회원의 설정값 받아와서 초기 설정해야함!
         searchOption = "&searchOption=30";
         gradient = 0.083;
         context = this;
         favorList = new ArrayList<>();
+        logList = new ArrayList<>();
 
 
-
-        tts=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+        tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
-                if(status!=-1){
+                if (status != -1) {
                     //언어선택
                     tts.setLanguage(Locale.KOREAN);
                 }
@@ -214,7 +213,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //tts목소리랑 속도 설정
         tts.setPitch(1.0f);
         tts.setSpeechRate(1.3f);
-
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -273,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         String finalTarget = target;
         startBtn = curlocation_dialog.findViewById(R.id.setStartBtn);
         endBtn = curlocation_dialog.findViewById(R.id.setEndBtn);
-        favorBtn= curlocation_dialog.findViewById(R.id.setFavorBtn);
+        favorBtn = curlocation_dialog.findViewById(R.id.setFavorBtn);
 
         TextView address = curlocation_dialog.findViewById(R.id.address);
         final EditText editText = new EditText(MainActivity.this);
@@ -322,6 +320,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
     }
+
     //맵 클릭시 작동하는 메소드 좌표 따오고 다이얼로그 띄움
     public void createSelection(double lat, double lon) {
         String target = "";
@@ -472,6 +471,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     LatLng Startpoint = new LatLng(curLatG, curLonG);
                     LatLng Endpoint = new LatLng(Double.parseDouble(endLatG), Double.parseDouble(endLonG));
 
+                    logList.add(strStart + " -> " + strEnd);
                     //출발 끝 중간 좌표
                     troubleLat = (curLatG + nextLat) / 2;
                     troubleLon = (curLonG + nextLon) / 2;
@@ -750,31 +750,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         routbutton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                    //길찾기버튼을 누르면 확대되면서 tts서비스
-                    tts.speak("길찾기를 시작합니다.", TextToSpeech.QUEUE_FLUSH,null);
+                //길찾기버튼을 누르면 확대되면서 tts서비스
+                tts.speak("길찾기를 시작합니다.", TextToSpeech.QUEUE_FLUSH, null);
 
-                    System.out.print("해치웠나?");
-                    LatLng firstLatlng = possibleLoute.get(0).Nodes.get(0);
-                    double latitute = firstLatlng.latitude;
-                    double longtitute = firstLatlng.longitude;
-                    System.out.println(firstLatlng.latitude);
-                    CameraPosition cameraPosition = new CameraPosition(
-                            new LatLng(latitute, longtitute),   // 위치 지정
-                            18,                           // 줌 레벨
-                            45,                          // 기울임 각도
-                            45                           // 방향
-                    );
-                    naverMap.setCameraPosition(cameraPosition);
-                    naverMap.setLocationTrackingMode(LocationTrackingMode.Face);
-                    startLocationService();
-                }
-            });
+                System.out.print("해치웠나?");
+                LatLng firstLatlng = possibleLoute.get(0).Nodes.get(0);
+                double latitute = firstLatlng.latitude;
+                double longtitute = firstLatlng.longitude;
+                System.out.println(firstLatlng.latitude);
+                CameraPosition cameraPosition = new CameraPosition(
+                        new LatLng(latitute, longtitute),   // 위치 지정
+                        18,                           // 줌 레벨
+                        45,                          // 기울임 각도
+                        45                           // 방향
+                );
+                naverMap.setCameraPosition(cameraPosition);
+                naverMap.setLocationTrackingMode(LocationTrackingMode.Face);
+                startLocationService();
+            }
+        });
 
 
     }
+
     //현재gps위치를 가져오기위한 LocationManager객체생성
     public void startLocationService() {
-        LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -787,38 +788,38 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         //3초가 지나거나 or 2m 움직일때마다 이벤트호출
-        GPSListener gpsListener=new GPSListener(ttsService);
-        long minTime=3000;
-        float minDistance=2;
-        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,minTime,minDistance,gpsListener);
-        Toast.makeText(getApplicationContext(),"내 위치확인 요청함", Toast.LENGTH_SHORT).show();
+        GPSListener gpsListener = new GPSListener(ttsService);
+        long minTime = 3000;
+        float minDistance = 2;
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
+        Toast.makeText(getApplicationContext(), "내 위치확인 요청함", Toast.LENGTH_SHORT).show();
     }
 
 
     //gps이동이벤트가 발생하면 로직수행
     class GPSListener implements LocationListener {
-        Map<LatLng,String> ttsService;
-        List<String> discription=new ArrayList<String>();
+        Map<LatLng, String> ttsService;
+        List<String> discription = new ArrayList<String>();
         LatLng ttsLatlng;
         double distance;
 
         public GPSListener(Map<LatLng, String> ttsService) {
-            this.ttsService=ttsService;
+            this.ttsService = ttsService;
         }
 
         @Override
         public void onLocationChanged(Location location) {
-            Double latitude=location.getLatitude();
-            Double longitude=location.getLongitude();
+            Double latitude = location.getLatitude();
+            Double longitude = location.getLongitude();
 
 
-            for(Map.Entry<LatLng,String> entry:ttsService.entrySet()){
-                ttsLatlng=entry.getKey();
-                distance=getDistance(latitude,longitude,ttsLatlng.latitude,ttsLatlng.longitude);
+            for (Map.Entry<LatLng, String> entry : ttsService.entrySet()) {
+                ttsLatlng = entry.getKey();
+                distance = getDistance(latitude, longitude, ttsLatlng.latitude, ttsLatlng.longitude);
 
                 //현재위치와 포인트좌표가 10m밖에 있고 한번음성출력이된적이있으면 제외
-                if(distance<10&&!(discription.contains(entry.getValue()))){
-                    tts.speak(entry.getValue(),TextToSpeech.QUEUE_FLUSH,null);
+                if (distance < 10 && !(discription.contains(entry.getValue()))) {
+                    tts.speak(entry.getValue(), TextToSpeech.QUEUE_FLUSH, null);
                     discription.add(entry.getValue());
                 }
             }
@@ -826,18 +827,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         //현재gps위치와 point위치사이의 거리 리턴, 단위m
-        public double getDistance(double lat1,double lng1,double lat2,double lng2){
+        public double getDistance(double lat1, double lng1, double lat2, double lng2) {
             double distance;
 
-            Location locationA=new Location("point A");
+            Location locationA = new Location("point A");
             locationA.setLatitude(lat1);
             locationA.setLongitude(lng1);
 
-            Location locationB=new Location("point B");
+            Location locationB = new Location("point B");
             locationB.setLatitude(lat2);
             locationB.setLongitude(lng2);
 
-            distance=locationA.distanceTo(locationB);
+            distance = locationA.distanceTo(locationB);
             return distance;
         }
     }
@@ -1111,13 +1112,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         curLonG = endLon;
                     }
 
-                    if(type.equals("Point")){
+                    if (type.equals("Point")) {
                         JSONObject properties = featuresIndex.getJSONObject("properties");
                         double tts_longitude = Double.parseDouble(geometry.getJSONArray("coordinates").get(0).toString());
                         double tts_latitude = Double.parseDouble(geometry.getJSONArray("coordinates").get(1).toString());
-                        LatLng tts_latlng=new LatLng(tts_latitude,tts_longitude);
-                        String description=properties.getString("description");
-                        ttsService.put(tts_latlng,description);
+                        LatLng tts_latlng = new LatLng(tts_latitude, tts_longitude);
+                        String description = properties.getString("description");
+                        ttsService.put(tts_latlng, description);
 
                     }
                 }

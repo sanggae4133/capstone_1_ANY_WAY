@@ -24,11 +24,7 @@ public class SettingActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mypage);
         favorList = ((MainActivity) MainActivity.context).favorList;
-        logList = new ArrayList<>();
-        logList.add("출발1" + " -> " + "도착1");
-        logList.add("출발2" + " -> " + "도착2");
-
-        String url = "http://" + "10.210.60.95" + ":8000/";
+        logList = ((MainActivity) MainActivity.context).logList;
 
         ListView favorListView = (ListView) findViewById(R.id.favorList);
         ListView logListView = (ListView) findViewById(R.id.recent_search_list);
@@ -113,16 +109,25 @@ public class SettingActivity2 extends AppCompatActivity {
 
                 // get TextView's Text.
                 String strText = (String) parent.getItemAtPosition(position);
+                int index = strText.indexOf(":");
+                String address = strText.substring(index + 1);
+                System.out.println(address);
                 AlertDialog.Builder msgBuilder = new AlertDialog.Builder(SettingActivity2.this)
-                        .setTitle("즐겨찾기 삭제하겠습니까?")
+                        .setTitle("즐겨찾기 선택지")
                         .setMessage(strText)
-                        .setPositiveButton("취소", new DialogInterface.OnClickListener() {
+                        .setPositiveButton("도착", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-
+                                ((MainActivity) MainActivity.context).editTextEnd.setText(address);
                             }
                         })
-                        .setNeutralButton("삭제하겠습니다", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("출발", new DialogInterface.OnClickListener(){
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ((MainActivity) MainActivity.context).editTextStart.setText(address);
+                            }
+                        })
+                        .setNeutralButton("삭제", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 favorList.remove(strText);
@@ -134,6 +139,34 @@ public class SettingActivity2 extends AppCompatActivity {
         });
 
 
+        logListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView parent, View v, int position, long id) {
+                // get TextView's Text.
+                String strText = (String) parent.getItemAtPosition(position);
+                int index = strText.indexOf("-");
+                String startAddress = strText.substring(0, index - 1);
+                String endAddress = strText.substring(index + 3);
+                System.out.println(startAddress + " " + endAddress);
+                AlertDialog.Builder msgBuilder = new AlertDialog.Builder(SettingActivity2.this)
+                        .setTitle("최근기록 불러오기")
+                        .setMessage(strText)
+                        .setPositiveButton("취소", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setNeutralButton("다시 검색?", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ((MainActivity) MainActivity.context).editTextStart.setText(startAddress);
+                                ((MainActivity) MainActivity.context).editTextEnd.setText(endAddress);
+                            }
+                        });
+                msgBuilder.create().show();
+            }
+        });
 
     }
 }
