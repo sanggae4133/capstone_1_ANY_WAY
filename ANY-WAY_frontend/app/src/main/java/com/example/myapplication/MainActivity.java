@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -102,9 +103,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     getAltitude getAltitudes;
     getCoordinate getCoordinates;
     Handler handler = new Handler();
-<<<<<<< HEAD
     static Context context;
-=======
 
     //tts생성
     TextToSpeech tts;
@@ -112,8 +111,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //포인트랑 tts출력을 위한 description을 담은 hashmap
     Map<LatLng,String> ttsService=new HashMap<>();
 
-    Context context;
->>>>>>> 5f1568507378e855e25ce591b421af46fd82b157
     ConstraintLayout resultBar;
     Animation translate_up, translate_down, translate_up2, translate_down2;
     Dialog curlocation_dialog;
