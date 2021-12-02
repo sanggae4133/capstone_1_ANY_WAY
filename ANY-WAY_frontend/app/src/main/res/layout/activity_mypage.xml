@@ -53,27 +53,25 @@
                     android:id="@+id/change_pw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginBottom="0dp"
+                    android:background="#00ff0000"
                     android:backgroundTint="@color/white"
                     android:fontFamily="sans-serif"
                     android:text="비밀번호 변경"
                     android:textColor="#dadada"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textSize="10sp"
+                    />
 
                 <Button
                     android:id="@+id/log_out"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="0dp"
-                    android:layout_marginBottom="0dp"
+                    android:background="#00ff0000"
                     android:backgroundTint="@color/white"
                     android:fontFamily="sans-serif"
                     android:text="로그아웃"
                     android:textColor="#dadada"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textSize="10sp"
+                    />
             </LinearLayout>
 
         </LinearLayout>
@@ -125,6 +123,7 @@
                     android:id="@+id/checkBox_handwheelchair"
                     android:layout_width="85dp"
                     android:layout_height="wrap_content"
+                    android:buttonTint="#f4c464"
                     android:fontFamily="sans-serif"
                     android:text="수동 휠체어"
                     android:textColor="#3f4040"
@@ -135,6 +134,7 @@
                     android:id="@+id/checkBox_crutches"
                     android:layout_width="60dp"
                     android:layout_height="wrap_content"
+                    android:buttonTint="#f4c464"
                     android:fontFamily="sans-serif"
                     android:text="목발"
                     android:textColor="#3f4040"
@@ -145,6 +145,7 @@
                     android:id="@+id/checkBox_autowheelchair"
                     android:layout_width="85dp"
                     android:layout_height="wrap_content"
+                    android:buttonTint="#f4c464"
                     android:fontFamily="sans-serif"
                     android:text="전동 휠체어"
                     android:textColor="#3f4040"
@@ -155,6 +156,7 @@
                     android:id="@+id/checkBox_stair"
                     android:layout_width="60dp"
                     android:layout_height="match_parent"
+                    android:buttonTint="#f4c464"
                     android:fontFamily="sans-serif"
                     android:text="계단"
                     android:textColor="#3f4040"
