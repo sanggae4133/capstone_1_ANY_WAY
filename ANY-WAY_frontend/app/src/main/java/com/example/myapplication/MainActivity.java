@@ -1,5 +1,7 @@
 package com.example.myapplication;
 
+import static android.speech.tts.TextToSpeech.ERROR;
+
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -12,9 +14,12 @@ import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
 import com.naver.maps.geometry.LatLng;
@@ -61,8 +67,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Vector;
 
 import okhttp3.OkHttpClient;
@@ -94,7 +102,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     getAltitude getAltitudes;
     getCoordinate getCoordinates;
     Handler handler = new Handler();
+<<<<<<< HEAD
     static Context context;
+=======
+
+    //tts생성
+    TextToSpeech tts;
+
+    //포인트랑 tts출력을 위한 description을 담은 hashmap
+    Map<LatLng,String> ttsService=new HashMap<>();
+
+    Context context;
+>>>>>>> 5f1568507378e855e25ce591b421af46fd82b157
     ConstraintLayout resultBar;
     Animation translate_up, translate_down, translate_up2, translate_down2;
     Dialog curlocation_dialog;
@@ -175,6 +194,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //지도 사용권한을 받아 온다.
         locationSource =
                 new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+
+        //tts를 생성하고 OnInitListener로 초기화
+        tts=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status!=ERROR){
+                    //언어선택
+                    tts.setLanguage(Locale.KOREAN);
+                }
+            }
+        });
+        //tts목소리랑 속도 설정
+        tts.setPitch(1.0f);
+        tts.setSpeechRate(1.3f);
 
 
         //******************수정 필요**************************************
@@ -715,6 +748,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View v) {
 
                 //길찾기버튼을 누르면 확대되면서 tts서비스
+                tts.speak("길찾기를 시작합니다.", TextToSpeech.QUEUE_FLUSH,null);
+
                 System.out.print("해치웠나?");
                 LatLng firstLatlng = possibleLoute.get(0).Nodes.get(0);
                 double latitute = firstLatlng.latitude;
@@ -728,10 +763,91 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 );
                 naverMap.setCameraPosition(cameraPosition);
                 naverMap.setLocationTrackingMode(LocationTrackingMode.Face);
+                startLocationService();
             }
         });
-
     }
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // TTS 객체가 남아있다면 실행을 중지하고 메모리에서 제거한다.
+        if(tts != null){
+            tts.stop();
+            tts.shutdown();
+            tts = null;
+        }
+    }
+    //현재gps위치를 가져오기위한 LocationManager객체생성
+    public void startLocationService() {
+        LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location != null) {
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+
+        }
+
+        //3초가 지나거나 or 2m 움직일때마다 이벤트호출
+        GPSListener gpsListener=new GPSListener(ttsService);
+        long minTime=3000;
+        float minDistance=2;
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,minTime,minDistance,gpsListener);
+        Toast.makeText(getApplicationContext(),"내 위치확인 요청함", Toast.LENGTH_SHORT).show();
+    }
+
+
+    //gps이동이벤트가 발생하면 로직수행
+    class GPSListener implements LocationListener {
+        Map<LatLng,String> ttsService;
+        List<String> discription=new ArrayList<String>();
+        LatLng ttsLatlng;
+        double distance;
+
+        public GPSListener(Map<LatLng, String> ttsService) {
+            this.ttsService=ttsService;
+        }
+
+        @Override
+        public void onLocationChanged(Location location) {
+            Double latitude=location.getLatitude();
+            Double longitude=location.getLongitude();
+
+
+            for(Map.Entry<LatLng,String> entry:ttsService.entrySet()){
+                ttsLatlng=entry.getKey();
+                distance=getDistance(latitude,longitude,ttsLatlng.latitude,ttsLatlng.longitude);
+
+                //현재위치와 포인트좌표가 10m밖에 있고 한번음성출력이된적이있으면 제외
+                if(distance<10&&!(discription.contains(entry.getValue()))){
+                    tts.speak(entry.getValue(),TextToSpeech.QUEUE_FLUSH,null);
+                    discription.add(entry.getValue());
+                }
+            }
+
+        }
+
+        //현재gps위치와 point위치사이의 거리 리턴, 단위m
+        public double getDistance(double lat1,double lng1,double lat2,double lng2){
+            double distance;
+
+            Location locationA=new Location("point A");
+            locationA.setLatitude(lat1);
+            locationA.setLongitude(lng1);
+
+            Location locationB=new Location("point B");
+            locationB.setLatitude(lat2);
+            locationB.setLongitude(lng2);
+
+            distance=locationA.distanceTo(locationB);
+            return distance;
+        }
+    }
+
+
 
     private Location getMyLocation() {
         Location currentLocation = null;
@@ -961,7 +1077,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //type이 Point일 경우에는 출발점, 경유지, 도착지점 이 세경우 뿐인데
                     //세가지는 구분하는 기준은 properties의 pointType으로 구분 가능하다.
 
-                    if (type.equals("LineString")) {
+                     if (type.equals("LineString")) {
                         JSONArray coordinatesArray = geometry.getJSONArray("coordinates");
                         System.out.println("coordinatesArray.length() = " + coordinatesArray.length());
 
@@ -998,6 +1114,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         curLatG = endLat;
                         curLonG = endLon;
+                    }
+                    if(type.equals("Point")){
+                        JSONObject properties = featuresIndex.getJSONObject("properties");
+                        double tts_longitude = Double.parseDouble(geometry.getJSONArray("coordinates").get(0).toString());
+                        double tts_latitude = Double.parseDouble(geometry.getJSONArray("coordinates").get(1).toString());
+                        LatLng tts_latlng=new LatLng(tts_latitude,tts_longitude);
+                        String description=properties.getString("description");
+                        ttsService.put(tts_latlng,description);
+
                     }
                 }
 
