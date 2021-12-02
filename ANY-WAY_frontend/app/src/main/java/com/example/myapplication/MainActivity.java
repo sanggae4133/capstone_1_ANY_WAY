@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -23,7 +24,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -84,20 +84,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     List<List<List<LatLng>>> impossibleRoads, possibleRoads;
     PolylineOverlay polylineOverlay, bannedOverlay;
     MultipartPathOverlay bannedOverlays;
-    Marker markerStart;
-    Marker markerEnd;
+    Marker markerStart, markerEnd, curMarker;
     TextView totalDistanceText;
     TextView totalTimeText;
     EditText editTextStart;
     EditText editTextEnd;
-    Button Button, getCurPosition, bestWayBtn, sortByTimeBtn, sortByDistBtn, searchBarBtn, slideBtn;
+    Button Button, getCurPosition, bestWayBtn, settingBtn, sortByDistBtn, searchBarBtn, slideBtn;
     ImageButton searchBtn, routbutton, changeBtn;
     getAltitude getAltitudes;
     getCoordinate getCoordinates;
     Handler handler = new Handler();
-    Context context;
+    static Context context;
     ConstraintLayout resultBar;
     Animation translate_up, translate_down, translate_up2, translate_down2;
+    Dialog curlocation_dialog;
 
     static String startLatG, endLatG, startLonG, endLonG;
     static ArrayList<LatLng> addressList;
@@ -106,9 +106,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     static ArrayList<Loute> possibleLoute;
     static double totalDistanceG, curLat, curLon, lonGap, latGap;
     static int totalTimeG, latOp, lonOp;
+    public String searchOption;
     static boolean isPageOpen;
     private LocationManager locationManager;
     private static final int REQUEST_CODE_LOCATION = 2;
+
 
     public class SlidingAnimationListener implements Animation.AnimationListener {
         @Override
@@ -161,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         translate_up2 = AnimationUtils.loadAnimation(this, R.anim.translate_up2);
         translate_down2 = AnimationUtils.loadAnimation(this, R.anim.translate_down2);
         slideBtn = findViewById(R.id.slideBtn);
+        settingBtn = findViewById(R.id.settingBtn);
 
         getCurPosition = findViewById(R.id.getCurPosition);
         polylineOverlay = new PolylineOverlay();
@@ -172,6 +175,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //지도 사용권한을 받아 온다.
         locationSource =
                 new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
+
+
+        //******************수정 필요**************************************
+        //검색 옵션 조절 원래는 db 연결을 통해 회원의 설정값 받아와서 초기 설정해야함!
+        searchOption = "&searchOption=30";
 
 
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -223,9 +231,67 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 requestCode, permissions, grantResults);
     }
 
+    //커스텀 다이얼로그 설정
+    public void setCurlocation_dialog(String target) {
+        curlocation_dialog.show();
+        Button startBtn, endBtn, favorBtn;
+        String finalTarget = target;
+        startBtn = curlocation_dialog.findViewById(R.id.setStartBtn);
+        endBtn = curlocation_dialog.findViewById(R.id.setEndBtn);
+        favorBtn= curlocation_dialog.findViewById(R.id.setFavorBtn);
+
+        TextView address = curlocation_dialog.findViewById(R.id.address);
+        final EditText editText = new EditText(MainActivity.this);
+
+        address.setText(target);
+        //출발지로 설정
+        startBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTextStart.setText(finalTarget);
+                curlocation_dialog.dismiss();
+            }
+        });
+
+        //도착지로 설정
+        endBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editTextEnd.setText(finalTarget);
+                curlocation_dialog.dismiss();
+            }
+        });
+        //즐겨찾기 등록 버튼
+        favorBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final AlertDialog.Builder alt_bld = new AlertDialog.Builder(MainActivity.this);
+                alt_bld.setTitle("즐겨찾기 이름 설정")
+                        .setMessage(finalTarget)
+                        .setCancelable(true)
+                        .setView(editText)
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                String nickname = editText.getText().toString();
+                                System.out.println(nickname);
+
+                                //여기에 즐겨찾기 이름 이랑 finalTarget으로 즐겨찾기 저장
+
+                            }
+                        });
+                AlertDialog alert = alt_bld.create();
+                alert.show();
+
+                curlocation_dialog.dismiss();
+            }
+        });
+
+    }
+    //맵 클릭시 작동하는 메소드 좌표 따오고 다이얼로그 띄움
     public void createSelection(double lat, double lon) {
         String target = "";
         List<Address> list = null;
+
         try {
 
             list = geocoder.getFromLocation(
@@ -244,31 +310,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
 
-        String finalTarget = target;
-        AlertDialog.Builder msgBuilder = new AlertDialog.Builder(MainActivity.this)
-                .setTitle("출발지 or 목적지 설정")
-                .setMessage(target)
-                .setPositiveButton("취소", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+        curlocation_dialog = new Dialog(MainActivity.this);       // Dialog 초기화
 
-                    }
-                })
-                .setNegativeButton("목적지", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(MainActivity.this, lat + " " + lon, Toast.LENGTH_SHORT).show();
-                        editTextEnd.setText(finalTarget);
-                    }
-                })
-                .setNeutralButton("출발지", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Toast.makeText(MainActivity.this, lat + " " + lon, Toast.LENGTH_SHORT).show();
-                        editTextStart.setText(finalTarget);
-                    }
-                });
-        msgBuilder.create().show();
+        curlocation_dialog.setContentView(R.layout.location_info_dialog);             // xml 레이아웃 파일과 연결
+        setCurlocation_dialog(target);
+
+
     }
 
     @Override
@@ -305,6 +352,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         naverMap.setOnMapClickListener(
                 (point, coord) -> createSelection(coord.latitude, coord.longitude)
         );
+
+        settingBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), SettingActivity2.class);
+                startActivity(intent);
+            }
+        });
 
         slideBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -422,7 +477,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     possibleLoute = new ArrayList<>();
                     impossibleRoads = new ArrayList<>();
                     //길찾는 스레드
-                    MyRunnable first = new MyRunnable(url + "&searchOption=10");
+                    MyRunnable first = new MyRunnable(url + searchOption);
                     Thread firstTry = new Thread(first);
                     firstTry.start();
                     try {
@@ -462,7 +517,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     e.printStackTrace();
                                 }*/
                                 // 경유지 추가해서 돌림
-                                MyRunnable r = new MyRunnable(url + "&&passList=" + testLon + "," + testLat + "&searchOption=10");
+                                MyRunnable r = new MyRunnable(url + "&&passList=" + testLon + "," + testLat + searchOption);
                                 Thread thread = new Thread(r);
                                 thread.start();
                                 try {

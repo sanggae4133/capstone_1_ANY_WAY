@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff"
+    android:foregroundTint="#FFFFFF"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/address"
+        android:layout_width="match_parent"
+        android:layout_height="59dp"
+        android:background="@color/colorAccent"
+        android:gravity="center"
+        android:textColor="#ffffff"
+        android:textSize="16dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#000000" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="12dp"
+        android:background="#F1E2B4" />
+
+    <LinearLayout
+        android:id="@+id/actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="#EAD595"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/setFavorBtn"
+            android:layout_width="95dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:background="#FACD46"
+            android:gravity="center"
+            android:text="즐겨찾기"
+            android:textColor="#000000"
+            android:textSize="16sp"
+            app:iconTint="#CC6464"
+            app:rippleColor="#FFFFFF" />
+
+        <View
+            android:id="@+id/view3"
+            android:layout_width="75dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#F1E2B4" />
+
+        <Button
+            android:id="@+id/setStartBtn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:text="출발"
+            android:textColor="#000000"
+            android:textSize="16dp" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="5dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#F1E2B4" />
+
+        <Button
+            android:id="@+id/setEndBtn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:text="도착"
+            android:textColor="#000000"
+            android:textSize="16dp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/view4"
+        android:layout_width="421dp"
+        android:layout_height="10dp"
+        android:background="#F1E2B4" />
+
+</LinearLayout>
