@@ -25,7 +25,7 @@
             android:value="dpopzyg8mk" />
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Login.LoginActivity2"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,8 +34,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Register.RegisterActivity2"/>
+        <activity android:name=".MainActivity"/>
         <activity android:name=".SettingActivity2"/>
-        <activity android:name=".SearchActivity"/>
 
     </application>
 
