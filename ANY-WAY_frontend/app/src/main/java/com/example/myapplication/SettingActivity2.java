@@ -23,10 +23,8 @@ public class SettingActivity2 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mypage);
-        favorList = new ArrayList<>();
+        favorList = ((MainActivity) MainActivity.context).favorList;
         logList = new ArrayList<>();
-        favorList.add("집");
-        favorList.add("학교");
         logList.add("출발1" + " -> " + "도착1");
         logList.add("출발2" + " -> " + "도착2");
 
@@ -45,17 +43,66 @@ public class SettingActivity2 extends AppCompatActivity {
         handwheelchair.setOnClickListener(new CheckBox.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (((CheckBox)v).isChecked()) {
+                if (((CheckBox) v).isChecked()) {
                     // TODO : CheckBox is checked.
-                    //((MainActivity)MainActivity.context).searchOption=
+                    System.out.println("체크박스 체크되어있음 => 수동휠체어 ON");
+                    ((MainActivity) MainActivity.context).gradient = 0.083;
 
                 } else {
-
                     // TODO : CheckBox is unchecked.
+                    System.out.println("체크박스 체크되어있음 => 수동휠체어 OFF");
+                    ((MainActivity) MainActivity.context).gradient = 0.083;
                 }
             }
-        }) ;
+        });
 
+        autowheelchair.setOnClickListener(new CheckBox.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    // TODO : CheckBox is checked.
+                    System.out.println("체크박스 체크되어있음 => 전동휠체어 ON");
+                    ((MainActivity) MainActivity.context).gradient = 0.176;
+
+                } else {
+                    // TODO : CheckBox is unchecked.
+                    System.out.println("체크박스 체크되어있음 => 전동휠체어 OFF");
+                    ((MainActivity) MainActivity.context).gradient = 0.083;
+                }
+            }
+        });
+        //목발
+        crutches.setOnClickListener(new CheckBox.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    // TODO : CheckBox is checked.
+                    System.out.println("체크박스 체크되어있음 => 목발 ON");
+                    ((MainActivity) MainActivity.context).gradient =0.1;
+
+                } else {
+                    // TODO : CheckBox is unchecked.
+                    System.out.println("체크박스 체크되어있음 => 목발 OFF");
+                    ((MainActivity) MainActivity.context).gradient = 0.083;
+                }
+            }
+        });
+        //계단
+        stair.setOnClickListener(new CheckBox.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (((CheckBox) v).isChecked()) {
+                    // TODO : CheckBox is checked.
+                    System.out.println("체크박스 체크되어있음 => 계단 ok");
+                    ((MainActivity) MainActivity.context).searchOption = "&searchOption=10";
+
+                } else {
+                    // TODO : CheckBox is unchecked.
+                    System.out.println("체크박스 체크안되어있음=> 계단 no");
+                    ((MainActivity) MainActivity.context).searchOption = "&searchOption=30";
+                }
+            }
+        });
 
         favorListView.setAdapter(favorAdapter);
         logListView.setAdapter(logAdapter);

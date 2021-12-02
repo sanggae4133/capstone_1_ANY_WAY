@@ -23,9 +23,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,7 +78,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
     private static final String[] PERMISSIONS = {Manifest.permission.ACCESS_FINE_LOCATION};
@@ -114,12 +115,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     static double totalDistanceG, curLat, curLon, lonGap, latGap;
     static int totalTimeG, latOp, lonOp;
     public String searchOption;
+    public Double gradient;
     static boolean isPageOpen;
     private LocationManager locationManager;
     private static final int REQUEST_CODE_LOCATION = 2;
     TextToSpeech tts;
     Map<LatLng,String> ttsService=new HashMap<>();
 
+    public static ArrayList<String> favorList;
+    ListView favorListView;
+    ArrayAdapter favorAdapter;
 
     public class SlidingAnimationListener implements Animation.AnimationListener {
         @Override
@@ -186,9 +191,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
 
 
+
+
         //******************수정 필요**************************************
         //검색 옵션 조절 원래는 db 연결을 통해 회원의 설정값 받아와서 초기 설정해야함!
         searchOption = "&searchOption=30";
+        gradient = 0.083;
+        context = this;
+        favorList = new ArrayList<>();
+
+
+
         tts=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
             public void onInit(int status) {
@@ -296,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             public void onClick(DialogInterface dialog, int id) {
                                 String nickname = editText.getText().toString();
                                 System.out.println(nickname);
-
+                                favorList.add(nickname + " : " + finalTarget);
                                 //여기에 즐겨찾기 이름 이랑 finalTarget으로 즐겨찾기 저장
 
                             }
@@ -423,7 +436,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String strEnd = editTextEnd.getText().toString();
                 getInTrouble = false;
                 isCurP = false;
-
 
                 ArrayList<String> coordinate = null;
                 List<Address> addressListStart = null, addressListEnd = null;
@@ -588,6 +600,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         LatLngBounds latLngBounds = new LatLngBounds(firstLatlng, lastLatlng);
                         CameraUpdate cameraUpdate = CameraUpdate.fitBounds(latLngBounds);
                         naverMap.moveCamera(cameraUpdate);
+
+                        System.out.println("searchOption = " + searchOption + " gradient = " + gradient);
+
                     } else {
                         System.out.println("좌표 => 주소 변환 문제");
                         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
@@ -756,7 +771,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
 
 
-        }
+    }
     //현재gps위치를 가져오기위한 LocationManager객체생성
     public void startLocationService() {
         LocationManager manager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
@@ -1057,6 +1072,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     //세가지는 구분하는 기준은 properties의 pointType으로 구분 가능하다.
 
                     if (type.equals("LineString")) {
+
                         JSONArray coordinatesArray = geometry.getJSONArray("coordinates");
                         System.out.println("coordinatesArray.length() = " + coordinatesArray.length());
 
@@ -1094,6 +1110,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         curLatG = endLat;
                         curLonG = endLon;
                     }
+
+                    if(type.equals("Point")){
+                        JSONObject properties = featuresIndex.getJSONObject("properties");
+                        double tts_longitude = Double.parseDouble(geometry.getJSONArray("coordinates").get(0).toString());
+                        double tts_latitude = Double.parseDouble(geometry.getJSONArray("coordinates").get(1).toString());
+                        LatLng tts_latlng=new LatLng(tts_latitude,tts_longitude);
+                        String description=properties.getString("description");
+                        ttsService.put(tts_latlng,description);
+
+                    }
                 }
 
             } catch (Exception e) {
@@ -1110,10 +1136,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 for (int i = 0; i < elevations.size() - 1; i++) {
                     double zDist = Math.abs(elevations.get(i + 1) - elevations.get(i));
-                    double gradient = (zDist / Dist.get(i));
+                    double curGradient = (zDist / Dist.get(i));
                     System.out.println("거리 " + Dist.get(i) + " 높이 " + zDist);
-                    System.out.println("경사도 : " + gradient);
-                    if (gradient > 0.083 && gradient < 0.3) {
+                    System.out.println("경사도 : " + curGradient);
+                    if (curGradient > gradient && curGradient < 0.3) {
                         System.out.println("경사도 초과");
                         impossibleRoad = new ArrayList<>();
                         impossibleRoad.add(new LatLng(Double.parseDouble(Lats.get(i)), Double.parseDouble(Lons.get(i))));
