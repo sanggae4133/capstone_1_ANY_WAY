@@ -20,15 +20,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/editTextStart"
         android:layout_width="178dp"
         android:layout_height="43dp"
-        android:background="#CFCDCD"
-        android:backgroundTint="#CFCDCD"
+        android:background="@drawable/search_btn"
         android:ems="10"
         android:hint="출발지점을 입력하세요"
         android:inputType="textPersonName"
@@ -43,7 +41,7 @@
         android:id="@+id/editTextEnd"
         android:layout_width="178dp"
         android:layout_height="43dp"
-        android:background="#CFCDCD"
+        android:background="@drawable/search_btn"
         android:ems="10"
         android:hint="도착지점을 입력하세요"
         android:inputType="textPersonName"
@@ -59,35 +57,21 @@
         android:id="@+id/getCurPosition"
         android:layout_width="62dp"
         android:layout_height="46dp"
+        android:background="@drawable/buttondesign"
         android:text="현위치"
+        android:textColor="#FFFFFF"
         android:textSize="10sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.773"
+        app:layout_constraintHorizontal_bias="0.793"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.036" />
-
-    <ImageButton
-        android:id="@+id/changeBtn"
-        android:layout_width="43dp"
-        android:layout_height="43dp"
-        android:backgroundTint="#FFAD33"
-        android:padding="0sp"
-        android:scaleType="centerCrop"
-
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.752"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.119"
-        app:srcCompat="@drawable/ic_switch" />
+        app:layout_constraintVertical_bias="0.039" />
 
     <ImageButton
         android:id="@+id/routbutton"
-        android:layout_width="46dp"
-        android:layout_height="43dp"
+        android:layout_width="48dp"
+        android:layout_height="46dp"
         android:background="#B5B4B4"
 
         android:backgroundTint="#FFAD33"
@@ -95,33 +79,51 @@
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.875"
+        app:layout_constraintHorizontal_bias="0.882"
         app:layout_constraintStart_toEndOf="@+id/editTextStart"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.036"
-        app:srcCompat="@drawable/ic_mic" />
+        app:layout_constraintVertical_bias="0.039"
+        app:srcCompat="@drawable/tts_icon" />
+
+    <ImageButton
+        android:id="@+id/changeBtn"
+        android:layout_width="62dp"
+        android:layout_height="43dp"
+        android:layout_marginEnd="72dp"
+
+        android:background="#B5B4B4"
+        android:backgroundTint="#FFAD33"
+        android:padding="0sp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.119"
+        app:srcCompat="@drawable/switch_icon" />
 
     <ImageButton
         android:id="@+id/searchBtn"
-        android:layout_width="52dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="43dp"
         android:backgroundTint="#FFAD33"
         android:padding="0sp"
         android:scaleType="centerCrop"
 
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.868"
-        app:layout_constraintStart_toEndOf="@+id/editTextEnd"
+        app:layout_constraintHorizontal_bias="0.964"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.12"
-        app:srcCompat="@drawable/search" />
+        app:layout_constraintVertical_bias="0.119"
+        app:srcCompat="@drawable/search_icon" />
 
     <Button
         android:id="@+id/slideBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="67dp"
+        android:layout_height="33dp"
+        android:background="@drawable/buttondesign"
         android:text="Close"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/resultBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -132,8 +134,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/resultBar"
         android:layout_width="411dp"
-        android:layout_height="150dp"
-        android:background="#80EFD178"
+        android:layout_height="129dp"
+        android:background="#80F3C565"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -160,39 +162,43 @@
             android:id="@+id/totalDistance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="220dp"
             android:text="총거리"
             android:textAlignment="textStart"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.619"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.227" />
+            app:layout_constraintVertical_bias="0.3" />
 
         <Button
             android:id="@+id/sortByDist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="75dp"
+            android:layout_height="36dp"
+            android:background="@drawable/buttondesign"
             android:text="최단거리"
+            android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.232"
+            app:layout_constraintHorizontal_bias="0.199"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.843" />
+            app:layout_constraintVertical_bias="0.827" />
 
         <Button
             android:id="@+id/bestWay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="75dp"
+            android:layout_height="36dp"
+            android:background="@drawable/buttondesign"
             android:text="최적경로"
+            android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.232"
+            app:layout_constraintHorizontal_bias="0.201"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.274" />
+            app:layout_constraintVertical_bias="0.197" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -200,7 +206,9 @@
         android:id="@+id/settingBtn"
         android:layout_width="47dp"
         android:layout_height="101dp"
+        android:background="@drawable/buttondesign"
         android:text="설정"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/map"
         app:layout_constraintHorizontal_bias="0.043"

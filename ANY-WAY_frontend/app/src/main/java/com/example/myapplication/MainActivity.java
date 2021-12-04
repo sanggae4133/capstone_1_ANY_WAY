@@ -406,7 +406,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     resultBar.setVisibility(View.VISIBLE);
                     resultBar.startAnimation(translate_down);
                     slideBtn.startAnimation(translate_down);
-                    slideBtn.setY(1300);
+                    slideBtn.setY(1370);
                 }
             }
         });
@@ -591,7 +591,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         // 시간에 1.5 배 곱하는 이유는 장애인의 평균적인 보행속도가 일반적인 경우에 비해 65% 정도라고 하기에
                         totalDistanceText.setText("총 거리 :" + possibleLoute.get(0).totalDistance / 1000 + " km");
-                        totalDistanceText.setX(700);
+                        ///totalDistanceText.setX(700);
                         totalTimeText.setText("총 거리 :" + (possibleLoute.get(0).time * 1.5) / 60 + "분");
                         // 영역이 온전히 보이는 좌표와 최대 줌 레벨로 카메라의 위치를 변경합니다.
                         // 경로의 첫번째포인트,마지막포인트를 지도에 꽉차게 보여줌
@@ -789,7 +789,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //3초가 지나거나 or 2m 움직일때마다 이벤트호출
         GPSListener gpsListener = new GPSListener(ttsService);
-        long minTime = 3000;
+        long minTime = 2000;
         float minDistance = 2;
         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, gpsListener);
         Toast.makeText(getApplicationContext(), "내 위치확인 요청함", Toast.LENGTH_SHORT).show();
