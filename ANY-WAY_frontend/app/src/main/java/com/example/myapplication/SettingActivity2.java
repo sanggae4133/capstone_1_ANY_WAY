@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,13 +13,18 @@ import android.widget.ListView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SettingActivity2 extends AppCompatActivity {
 
     ArrayList<String> favorList;
     ArrayList<String> logList;
 
-    JsonPlaceHolderAPI jsonPlaceHolderAPI;
+    JsonPlaceHolderAPI2 jsonPlaceHolderAPI2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +41,10 @@ public class SettingActivity2 extends AppCompatActivity {
                 crutches = (CheckBox) findViewById(R.id.checkBox_crutches),
                 autowheelchair = (CheckBox) findViewById(R.id.checkBox_autowheelchair),
                 stair = (CheckBox) findViewById(R.id.checkBox_stair);
+
+        String useremail="doori";
+        Likeresponse(useremail);
+
 
         handwheelchair.setOnClickListener(new CheckBox.OnClickListener() {
             @Override
@@ -107,6 +117,8 @@ public class SettingActivity2 extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView parent, View v, int position, long id) {
 
+
+
                 // get TextView's Text.
                 String strText = (String) parent.getItemAtPosition(position);
                 int index = strText.indexOf(":");
@@ -168,5 +180,29 @@ public class SettingActivity2 extends AppCompatActivity {
             }
         });
 
+    }
+    public void Likeresponse(String useremail) {
+        //LikeList likeList = new LikeList("dd", "dd", useremail);
+        Call<List<LikeList>> call = RetrofitClient2.getApiService().likeRequest(useremail);
+        call.enqueue(new Callback<List<LikeList>>() {
+            @Override
+            public void onResponse(Call<List<LikeList>> call, Response<List<LikeList>> response) {
+                System.out.println(response.body());
+                List<LikeList> lists=response.body();
+                for(LikeList likeList:lists){
+                    String content = "";
+                    String content1="";
+                    content= likeList.getLocation();
+                    content1=likeList.getLikename();
+                    System.out.println("location = "+content+"  name = "+content1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<LikeList>> call, Throwable t) {
+                Log.e("연결실패", t.getMessage());
+            }
+
+        });
     }
 }

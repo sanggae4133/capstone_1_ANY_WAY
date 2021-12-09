@@ -8,14 +8,14 @@ interface RegisterService {
     @FormUrlEncoded
     @POST("/app_register/")
     fun requestRegister(
-        @Field("name") name:String,
-        @Field("userid") userid:String,
+        @Field("username") username:String,
+        @Field("useremail") useremail:String,
         @Field("userpw") userpw:String
     ) : Call<Register>
 
     @FormUrlEncoded
     @POST("/app_check_id/")
     fun checkId(
-        @Field("userid") userid:String
+        @Field("useremail") useremail:String
     ) : Call<Register>
 }

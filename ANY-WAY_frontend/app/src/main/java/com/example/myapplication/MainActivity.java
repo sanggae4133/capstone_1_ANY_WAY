@@ -77,6 +77,10 @@ import java.util.Vector;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
@@ -95,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     Marker markerStart, markerEnd, curMarker;
     TextView totalDistanceText;
     TextView totalTimeText;
+
+
+    //즐겨찾기 레트로핏통신
+    private JsonPlaceHolderAPI jsonPlaceHolderAPI;
 
     public static EditText editTextStart, editTextEnd;
 
@@ -307,6 +315,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             public void onClick(DialogInterface dialog, int id) {
                                 String nickname = editText.getText().toString();
                                 System.out.println(nickname);
+                                Likeresponse(nickname,finalTarget);
                                 favorList.add(nickname + " : " + finalTarget);
                                 //여기에 즐겨찾기 이름 이랑 finalTarget으로 즐겨찾기 저장
 
@@ -316,6 +325,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 alert.show();
 
                 curlocation_dialog.dismiss();
+            }
+        });
+    }
+    public void Likeresponse(String likename,String location){
+        String useremail="doori";
+        LikeList likeList=new LikeList(likename,location,useremail);
+        System.out.println(likeList.getLocation());
+        Call<LikeList> call=RetrofitClient.getApiService().likeResponse(likeList);
+        call.enqueue(new Callback<LikeList>() {
+            @Override
+            public void onResponse(Call<LikeList> call, retrofit2.Response<LikeList> response) {
+                if(!response.isSuccessful()){
+                    Log.e("연결이 비정상적 : ", "error code : " + response.code());
+                    return;
+                }
+                Log.d("연결이 성공적 : ", response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<LikeList> call, Throwable t) {
+                Log.e("연결실패", t.getMessage());
+
             }
         });
 
