@@ -58,12 +58,14 @@ class LoginActivity2 : AppCompatActivity() {
                     login = response.body()
                     Log.d("LOGIN","msg : "+login?.msg)
                     Log.d("LOGIN","code : "+login?.code)
-//                    var dialog = AlertDialog.Builder(this@LoginActivity2)
-//                    dialog.setTitle(login?.msg)
-//                    dialog.setMessage(login?.code)
-//                    dialog.show()
+
                     if(login?.code =="0000"){
                         startActivity(intent)
+                    }else{
+                        var dialog = AlertDialog.Builder(this@LoginActivity2)
+                        dialog.setTitle("에러")
+                        dialog.setMessage("로그인 실패")
+                        dialog.show()
                     }
                 }
 

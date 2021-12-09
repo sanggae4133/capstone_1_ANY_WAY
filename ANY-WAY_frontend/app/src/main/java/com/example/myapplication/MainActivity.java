@@ -592,7 +592,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         // 시간에 1.5 배 곱하는 이유는 장애인의 평균적인 보행속도가 일반적인 경우에 비해 65% 정도라고 하기에
                         totalDistanceText.setText("총 거리 :" + possibleLoute.get(0).totalDistance / 1000 + " km");
                         ///totalDistanceText.setX(700);
-                        totalTimeText.setText("총 거리 :" + (possibleLoute.get(0).time * 1.5) / 60 + "분");
+                        totalTimeText.setText("총 시간 :" + (possibleLoute.get(0).time * 1.5) / 60 + "분");
                         // 영역이 온전히 보이는 좌표와 최대 줌 레벨로 카메라의 위치를 변경합니다.
                         // 경로의 첫번째포인트,마지막포인트를 지도에 꽉차게 보여줌
                         LatLng firstLatlng = possibleLoute.get(0).Nodes.get(0);
