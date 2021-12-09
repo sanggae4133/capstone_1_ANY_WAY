@@ -38,6 +38,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.myapplication.Login.LoginActivity2;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraPosition;
@@ -124,8 +125,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     Map<LatLng, String> ttsService = new HashMap<>();
 
     public static ArrayList<String> favorList, logList;
+    public static boolean CheckBox_handwheelchair, CheckBox_crutches,CheckBox_autowheelchair,CheckBox_stair;
+    public static String userid;
     ListView favorListView, logListView ;
     ArrayAdapter favorAdapter, logAdapter;
+
+
 
     public class SlidingAnimationListener implements Animation.AnimationListener {
         @Override
@@ -194,12 +199,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //******************수정 필요**************************************
         //검색 옵션 조절 원래는 db 연결을 통해 회원의 설정값 받아와서 초기 설정해야함!
-        searchOption = "&searchOption=30";
+        searchOption = "&searchOption=30"; //기본적으로 계단제외
         gradient = 0.083;
         context = this;
         favorList = new ArrayList<>();
         logList = new ArrayList<>();
+        userid = ((LoginActivity2) LoginActivity2.context).ID;
 
+        System.out.println("userid "+userid);
+
+        CheckBox_handwheelchair = true;
+        CheckBox_autowheelchair = false;
+        CheckBox_crutches = false;
+        CheckBox_stair = false;
 
         tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
