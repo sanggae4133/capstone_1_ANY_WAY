@@ -1,5 +1,6 @@
 package com.example.myapplication.Login
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -19,7 +20,13 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class LoginActivity2 : AppCompatActivity() {
+    lateinit var ID: String
     var login: Login? = null
+    companion object {
+        @kotlin.jvm.JvmField
+        var context: Context? = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getWindow().setFlags(
@@ -27,6 +34,8 @@ class LoginActivity2 : AppCompatActivity() {
         //setContentView(R.layout.activity_main)
         setContentView(R.layout.activity_login)
         //setContentView(R.layout.activity_join)
+        context = this
+
 
         // 백엔드 통신  retrofit 설정
         //baseURl http://~~~:8000/
@@ -42,6 +51,7 @@ class LoginActivity2 : AppCompatActivity() {
         login_button.setOnClickListener{
             var text1 = login_email.text.toString()
             var text2 = login_password.text.toString()
+            ID = text1
             val intent = Intent(this, MainActivity::class.java)
             loginService.requestLogin(text1,text2).enqueue(object: Callback<Login> {
                 override fun onFailure(call: Call<Login>, t: Throwable) {
@@ -83,4 +93,5 @@ class LoginActivity2 : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
 }

@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">My Application</string>
-    <string name="user_name_text">사용자 김애니</string>
+    <string name="app_name">anyway</string>
     <string name="my_ride">내 옵션</string>
 </resources>

@@ -38,6 +38,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.example.myapplication.Login.LoginActivity2;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraPosition;
@@ -132,8 +133,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     Map<LatLng, String> ttsService = new HashMap<>();
 
     public static ArrayList<String> favorList, logList;
+    public static boolean CheckBox_handwheelchair, CheckBox_crutches,CheckBox_autowheelchair,CheckBox_stair;
+    public static String userid;
     ListView favorListView, logListView ;
     ArrayAdapter favorAdapter, logAdapter;
+
+
 
     public class SlidingAnimationListener implements Animation.AnimationListener {
         @Override
@@ -202,12 +207,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         //******************수정 필요**************************************
         //검색 옵션 조절 원래는 db 연결을 통해 회원의 설정값 받아와서 초기 설정해야함!
-        searchOption = "&searchOption=30";
+        searchOption = "&searchOption=30"; //기본적으로 계단제외
         gradient = 0.083;
         context = this;
         favorList = new ArrayList<>();
         logList = new ArrayList<>();
+        userid = ((LoginActivity2) LoginActivity2.context).ID;
 
+        Likeresponse(userid);
+        System.out.println("userid "+userid);
+
+        CheckBox_handwheelchair = true;
+        CheckBox_autowheelchair = false;
+        CheckBox_crutches = false;
+        CheckBox_stair = false;
 
         tts = new TextToSpeech(this, new TextToSpeech.OnInitListener() {
             @Override
@@ -329,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
     public void Likeresponse(String likename,String location){
-        String useremail="doori";
+        String useremail=userid;
         LikeList likeList=new LikeList(likename,location,useremail);
         System.out.println(likeList.getLocation());
         Call<LikeList> call=RetrofitClient.getApiService().likeResponse(likeList);
@@ -350,6 +363,33 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+    }
+
+    public void Likeresponse(String useremail) {
+        //LikeList likeList = new LikeList("dd", "dd", useremail);
+        Call<List<LikeList>> call = RetrofitClient2.getApiService().likeRequest(useremail);
+        call.enqueue(new Callback<List<LikeList>>() {
+            @Override
+            public void onResponse(Call<List<LikeList>> call, retrofit2.Response<List<LikeList>> response) {
+                System.out.println(response.body());
+                List<LikeList> lists=response.body();
+                for(LikeList likeList:lists){
+                    String content = "";
+                    String content1="";
+                    content= likeList.getLocation();
+                    content1=likeList.getLikename();
+                    String result=content1+" : "+content;
+                    favorList.add(result);
+                    System.out.println(result);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<LikeList>> call, Throwable t) {
+                Log.e("연결실패", t.getMessage());
+            }
+
+        });
     }
 
     //맵 클릭시 작동하는 메소드 좌표 따오고 다이얼로그 띄움
