@@ -49,7 +49,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/user_name_text">
 
-                <Button
+                <!-- <Button
                     android:id="@+id/change_pw"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -58,9 +58,9 @@
                     android:fontFamily="sans-serif"
                     android:text="비밀번호 변경"
                     android:textColor="#dadada"
-                    android:textSize="10sp" />
+                    android:textSize="10sp" />!-->
 
-                <Button
+               <!-- <Button
                     android:id="@+id/log_out"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -69,7 +69,7 @@
                     android:fontFamily="sans-serif"
                     android:text="로그아웃"
                     android:textColor="#dadada"
-                    android:textSize="10sp" />
+                    android:textSize="10sp" /> !-->
             </LinearLayout>
 
         </LinearLayout>
