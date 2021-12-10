@@ -9,9 +9,8 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os.path
 from pathlib import Path
-import my_settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-
+SECRET_KEY = 'django-insecure-1i+^-o0diy&-343^xtms_c5=co)_r@a3v^ny@=f^t$%lwrdc52'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -39,16 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'accounts'
+    'addresses',
 ]
-
-REST_FRAMEWORK = {
-    # Use Django's standard `django.contrib.auth` permissions,
-    # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
-}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -65,7 +56,7 @@ ROOT_URLCONF = 'anyway_backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR),'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,26 +71,30 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'anyway_backend.wsgi.application'
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# 데이터베이스 관련 설정 내역 manage.py 가 있는 디렉토리에 my_settings 만들어서 import 함
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'anyway',
+        'USER':'root',
+        'PASSWORD':'0707',
+        'HOST':'localhost',
+        'PORT':'3306'
+    }
+}
 
-DATABASES = my_settings.DATABASES
-SECRET_KEY = my_settings.SECRET_KEY
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',  # 엔진 설정
-#         'NAME': 'anyway',  # DB 스키마 이름
-#         'USER': 'root',  # DB 접속 계정명
-#         'PASSWORD': 'Bs970923',  # DB 접속 계정 비번
-#         'HOST': 'localhost',  # 실제 DB 주소
-#         'PORT': '3306',  # 포트번호
-#     }
-# }
-# SECRET_KEY = ''
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
